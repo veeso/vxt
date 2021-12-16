@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "vxt"
+version = "0.1.0"
+description = "A python CLI tool to extract voice sentences from audio files with speech recognition"
+authors = ["veeso <christian.visintin1997@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pydub = "^0.25.0"
+yaspin = "^2.1.0"
+inquirer = "^2.8.0"
+SpeechRecognition  = "^3.8.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
