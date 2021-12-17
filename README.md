@@ -46,7 +46,7 @@
 <p align="center">
   <a href="https://github.com/veeso/vxt/actions"
     ><img
-      src="https://github.com/veeso/vxt/workflows/CI/badge.svg"
+      src="https://github.com/veeso/vxt/workflows/Ci/badge.svg"
       alt="CI"
   /></a>
   <a href="https://coveralls.io/github/veeso/vxt"
