@@ -20,5 +20,23 @@
 # SOFTWARE.
 #
 
-from .engine import Speech2TextEngine
-from .error import Speech2TextError
+from .audio import Audio
+from .error import AudioError
+from pydub.playback import play
+
+
+class Speaker(object):
+    """The speaker plays an `Audio` on the local device"""
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    def play(self, audio: Audio) -> None:
+        """
+        Play audio.
+        Raises `AudioError` in case of error
+        """
+        try:
+            play(audio.audio)
+        except AudioError as e:
+            raise AudioError("Failed to play audio: %s" % e)

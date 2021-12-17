@@ -20,5 +20,19 @@
 # SOFTWARE.
 #
 
-from .engine import Speech2TextEngine
-from .error import Speech2TextError
+from ..audio import Audio
+from abc import ABCMeta, abstractmethod
+from typing import Optional
+
+
+class Speech2TextEngine(object):
+    """Speech2TextEngine provides the methods to get the speech given an `Audio` as input"""
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def get_speech(self, audio: Audio, language: str) -> Optional[str]:
+        """
+        Given an audio as input, get the speech for that audio as `string`
+        """
+        raise NotImplementedError

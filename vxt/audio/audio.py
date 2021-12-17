@@ -20,5 +20,28 @@
 # SOFTWARE.
 #
 
-from .engine import Speech2TextEngine
-from .error import Speech2TextError
+from abc import ABCMeta, abstractmethod
+from pydub import AudioSegment
+
+
+class Audio(object):
+    """Audio interface provides method which must be implemented by different Audio types"""
+
+    __metaclass__ = ABCMeta
+
+    @property
+    @abstractmethod
+    def audio(self) -> AudioSegment:
+        """Return audio segment"""
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def slug(self) -> str:
+        """Return the slug which identify the audio"""
+        raise NotImplementedError
+
+    @abstractmethod
+    def set_audio(self, audio: AudioSegment) -> None:
+        """Set the audio segment for audio entity"""
+        raise NotImplementedError

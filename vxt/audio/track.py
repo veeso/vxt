@@ -20,5 +20,43 @@
 # SOFTWARE.
 #
 
-from .engine import Speech2TextEngine
-from .error import Speech2TextError
+from .audio import Audio, AudioSegment
+
+
+class Track(Audio):
+    """
+    Track identifies an audio chunk taken from another `Audio`.
+    The track has not a physical location and is considered to be a mutable audio entity
+    """
+
+    def __init__(self, audio: AudioSegment, name: str = None) -> None:
+        super().__init__()
+        self.__audio = audio
+        self.__name = name
+        self.__speech = ""
+
+    @property
+    def audio(self) -> AudioSegment:
+        return self.__audio
+
+    @property
+    def slug(self) -> str:
+        if self.__name:
+            return self.__name
+        else:
+            return ""
+
+    @property
+    def speech(self) -> str:
+        return self.__speech
+
+    @speech.setter
+    def speech(self, s: str) -> None:
+        self.__speech = s
+
+    def set_audio(self, audio: AudioSegment) -> None:
+        self._audio = audio
+
+    def set_name(self, name: str) -> None:
+        """Set new name for `Track`"""
+        self.__name = name

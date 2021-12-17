@@ -20,5 +20,17 @@
 # SOFTWARE.
 #
 
-from .engine import Speech2TextEngine
-from .error import Speech2TextError
+
+class AudioError(Exception):
+    """
+    Audio error
+    """
+
+    def __init__(self, message: str):
+        self.message = message
+
+    def __str__(self):
+        return repr(self.message)
+
+    def __repr__(self):
+        return str(self.message)

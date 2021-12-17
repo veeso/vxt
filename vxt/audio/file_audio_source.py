@@ -20,5 +20,31 @@
 # SOFTWARE.
 #
 
-from .engine import Speech2TextEngine
-from .error import Speech2TextError
+from .audio_source import AudioSource, AudioSegment
+from .error import AudioError
+
+
+class FileAudioSource(AudioSource):
+    """Defines an audio source located on a file system file"""
+
+    def __init__(self, path: str) -> None:
+        """
+        Initialize a new AudioSource.
+        Slug is a string which identifies the audio source uniquely, such as a file path or a device,
+        while audio is the AudioSegment containing the audio.
+
+        In case it fails to decode the audio file, raises a `AudioError`
+        """
+        audio = FileAudioSource.__open_audio_file(path)
+        super().__init__(path, audio)
+
+    @staticmethod
+    def __open_audio_file(path: str) -> AudioSegment:
+        """
+        Open the audio file located at `path`.
+        Raises `AudioError` in case of error
+        """
+        try:
+            return AudioSegment.from_file(path)
+        except Exception as e:
+            raise AudioError(e)
