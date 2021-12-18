@@ -24,9 +24,9 @@ from ..audio import Audio
 from ..audio.processor import AudioProcessor
 from .engine import Speech2TextEngine
 from .error import Speech2TextError
+from io import BytesIO
 import speech_recognition as sr
 from typing import Optional
-from tempfile import NamedTemporaryFile
 
 
 class GoogleCloudSpeech2TextEngine(Speech2TextEngine):
@@ -40,20 +40,13 @@ class GoogleCloudSpeech2TextEngine(Speech2TextEngine):
 
     def get_speech(self, audio: Audio, language: str) -> Optional[str]:
         try:
-            temp = self.__make_tempfile(audio)
-            source = sr.AudioFile(temp.name)
-            audio_source = self.__engine.record(source)
-            return self.__engine.recognize_google_cloud(
-                audio_source, self.__credentials, language, show_all=False
-            )
+            audio_data = BytesIO()
+            audio.audio.export(audio_data, "wav")
+            sr_audio = sr.AudioFile(audio_data)
+            with sr_audio as source:
+                audio_source = self.__engine.record(source)
+                return self.__engine.recognize_google_cloud(
+                    audio_source, self.__credentials, language, show_all=False
+                )
         except Exception as e:
             raise Speech2TextError("Speech recognition error: %s" % e)
-
-    def __make_tempfile(self, audio: Audio) -> NamedTemporaryFile:
-        """
-        Make tempfile which stores the audio data
-        """
-        temp = NamedTemporaryFile(mode="w+b", delete=False)
-        temp.close()
-        self.__audio_proc.export(audio, temp.name, "wav")
-        return temp
