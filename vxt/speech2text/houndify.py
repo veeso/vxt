@@ -20,7 +20,7 @@
 # SOFTWARE.
 #
 
-from ..audio import Audio
+from ..audio.audio import Audio
 from ..audio.processor import AudioProcessor
 from .engine import Speech2TextEngine
 from .error import Speech2TextError

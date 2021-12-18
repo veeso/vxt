@@ -19,6 +19,3 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-
-from .engine import Speech2TextEngine
-from .error import Speech2TextError

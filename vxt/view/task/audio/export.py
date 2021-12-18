@@ -20,38 +20,19 @@
 # SOFTWARE.
 #
 
-from ..audio.audio import Audio
-from ..audio.processor import AudioProcessor
-from .engine import Speech2TextEngine
-from .error import Speech2TextError
-from io import BytesIO
-import speech_recognition as sr
+from ..task import Task as ITask
+from vxt.audio.track import Track
+from vxt.audio.processor import AudioProcessor
 from typing import Optional
 
 
-class IbmSpeech2TextEngine(Speech2TextEngine):
-    """A speech2text engine which uses the IBM API"""
+class ExportTask(ITask):
+    """A task to export tracks"""
 
-    def __init__(self, username: str, password: str) -> None:
+    def __init__(self, track: Track, format: Optional[str]) -> None:
         super().__init__()
-        self.__engine = sr.Recognizer()
-        self.__audio_proc = AudioProcessor()
-        self.__username = username
-        self.__password = password
+        self.__track = track
+        self.__format = format
 
-    def get_speech(self, audio: Audio, language: str) -> Optional[str]:
-        try:
-            audio_data = BytesIO()
-            audio.audio.export(audio_data, "wav")
-            sr_audio = sr.AudioFile(audio_data)
-            with sr_audio as source:
-                audio_source = self.__engine.record(source)
-                return self.__engine.recognize_ibm(
-                    audio_source,
-                    self.__username,
-                    self.__password,
-                    language,
-                    show_all=False,
-                )
-        except Exception as e:
-            raise Speech2TextError("Speech recognition error: %s" % e)
+    def run(self) -> None:
+        AudioProcessor().export(self.__track, self.__track.slug, self.__format)

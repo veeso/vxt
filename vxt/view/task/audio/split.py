@@ -20,33 +20,33 @@
 # SOFTWARE.
 #
 
-from ..audio.audio import Audio
-from ..audio.processor import AudioProcessor
-from .engine import Speech2TextEngine
-from .error import Speech2TextError
-from io import BytesIO
-import speech_recognition as sr
-from typing import Optional
+from ..task import Task as ITask
+from vxt.audio.audio import Audio
+from vxt.audio.track import Track
+from vxt.audio.processor import AudioProcessor
+from typing import List
 
 
-class BingSpeech2TextEngine(Speech2TextEngine):
-    """A speech2text engine which uses the Bing API"""
+class SplitTask(ITask):
+    """A task to split audio by silence into tracks"""
 
-    def __init__(self, api_key: str) -> None:
+    def __init__(
+        self,
+        audio: Audio,
+        min_silence_len: int,
+        silence_threshold: int,
+        keep_silence: int,
+    ) -> None:
         super().__init__()
-        self.__engine = sr.Recognizer()
-        self.__audio_proc = AudioProcessor()
-        self.__api_key = api_key
+        self.__audio = audio
+        self.__min_silence_len = min_silence_len
+        self.__silence_threshold = silence_threshold
+        self.__keep_silence = keep_silence
 
-    def get_speech(self, audio: Audio, language: str) -> Optional[str]:
-        try:
-            audio_data = BytesIO()
-            audio.audio.export(audio_data, "wav")
-            sr_audio = sr.AudioFile(audio_data)
-            with sr_audio as source:
-                audio_source = self.__engine.record(source)
-                return self.__engine.recognize_bing(
-                    audio_source, self.__api_key, language, show_all=False
-                )
-        except Exception as e:
-            raise Speech2TextError("Speech recognition error: %s" % e)
+    def run(self) -> List[Track]:
+        return AudioProcessor().split_by_silence(
+            self.__audio,
+            self.__min_silence_len,
+            self.__silence_threshold,
+            self.__keep_silence,
+        )

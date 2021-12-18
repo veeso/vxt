@@ -59,15 +59,17 @@ class AudioProcessor(object):
         except Exception as e:
             raise AudioError("Failed to split audio: %s" % e)
 
-    def amplify(self, audio: Audio, dB: int) -> None:
+    def amplify(self, audio: Audio, dB: int) -> Audio:
         """Amplify audio by `dB`"""
         new_audio: AudioSegment = audio.audio + dB
         audio.set_audio(new_audio)
+        return audio
 
-    def normalize(self, audio: Audio) -> None:
+    def normalize(self, audio: Audio) -> Audio:
         """Normalize audio"""
         new_audio: AudioSegment = normalize(audio.audio)
         audio.set_audio(new_audio)
+        return audio
 
     def export(self, audio: Audio, path: str, format: Optional[str] = None) -> None:
         """

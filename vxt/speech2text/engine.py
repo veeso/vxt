@@ -20,7 +20,7 @@
 # SOFTWARE.
 #
 
-from ..audio import Audio
+from ..audio.audio import Audio
 from abc import ABCMeta, abstractmethod
 from typing import Optional
 

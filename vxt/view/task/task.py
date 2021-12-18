@@ -20,33 +20,16 @@
 # SOFTWARE.
 #
 
-from ..audio.audio import Audio
-from ..audio.processor import AudioProcessor
-from .engine import Speech2TextEngine
-from .error import Speech2TextError
-from io import BytesIO
-import speech_recognition as sr
-from typing import Optional
+from abc import ABCMeta, abstractmethod
+from typing import Any
 
 
-class BingSpeech2TextEngine(Speech2TextEngine):
-    """A speech2text engine which uses the Bing API"""
+class Task(object):
+    """Task interface provides the method to implement for application tasks"""
 
-    def __init__(self, api_key: str) -> None:
-        super().__init__()
-        self.__engine = sr.Recognizer()
-        self.__audio_proc = AudioProcessor()
-        self.__api_key = api_key
+    __metaclass__ = ABCMeta
 
-    def get_speech(self, audio: Audio, language: str) -> Optional[str]:
-        try:
-            audio_data = BytesIO()
-            audio.audio.export(audio_data, "wav")
-            sr_audio = sr.AudioFile(audio_data)
-            with sr_audio as source:
-                audio_source = self.__engine.record(source)
-                return self.__engine.recognize_bing(
-                    audio_source, self.__api_key, language, show_all=False
-                )
-        except Exception as e:
-            raise Speech2TextError("Speech recognition error: %s" % e)
+    @abstractmethod
+    def run(self) -> Any:
+        """Run task"""
+        raise NotImplementedError
