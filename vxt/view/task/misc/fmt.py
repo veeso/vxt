@@ -21,23 +21,167 @@
 #
 
 from ..task import Task as ITask
+from datetime import datetime
+import re
+from typing import List, Callable, Any, Optional
 from vxt.audio.track import Track
+
+# FmtFn: wrkstr, prepend, track
+FmtFn = Callable[[Track], str]
+Callchain = List[FmtFn]
+# Regex
+FMT_REGEX: str = r"%(?:([%,d,H,M,m,S,s,t,y,Y]))(\.(?:(\d+)))?"
+
+
+class TrackFmt(object):
+    """Track filename fmt.
+    The syntax use parameters which must be preceeded by `%`, everything in between will be kept the same.
+    The following parameters are supported.
+
+    - %%: print percentage symbol
+    - %d: current day
+    - %H: current hours
+    - %M: current minutes
+    - %m: current month
+    - %S: current seconds
+    - %s: track speech
+    - %s.NUMBER track speech cut at length (e.g. `%s.24`)
+    - %t: track number in track list (from 1 to n)
+    - %y: current year with 2 digits
+    - %Y: current year with 4 digits
+    """
+
+    def __init__(self, fmt: str, regex: Optional[Any] = None) -> None:
+        super().__init__()
+        if not regex:
+            regex = re.compile(FMT_REGEX)
+        self.__build(fmt, regex)
+
+    def fmt(self, wrkstr: str, track: Track) -> str:
+        """Fmt incoming str according to callchain"""
+        arg = self.__func(track)
+        if self.__len:
+            arg = arg[: self.__len]
+        wrkstr = "%s%s%s" % (wrkstr, self.__prepend, arg)
+        # Call next block
+        if self.__next:
+            return self.__next.fmt(wrkstr, track)
+        else:
+            return wrkstr
+
+    # callchain constructor
+    def __build(self, wrkstr: str, regex: Any) -> None:
+        # Find first
+        result = regex.search(wrkstr)
+        if result:
+            # Prepend
+            self.__prepend = wrkstr[: result.start()]
+            # Parse
+            keyword = result.group(1)
+            self.__len = result.group(3)
+            # Get new working string
+            wrkstr = wrkstr[result.end() :]
+            # Get func
+            self.__func = TrackFmt.__get_fmt_func(keyword)
+            # Process remainign string
+            self.__next = TrackFmt(wrkstr, regex)
+        else:
+            # Return dummy
+            self.__func = TrackFmt.__fmt_none
+            self.__prepend = wrkstr
+            self.__len = None
+            self.__next = None
+
+    @staticmethod
+    def __get_fmt_func(keyword: str) -> FmtFn:
+        if keyword == "%":
+            return TrackFmt.__fmt_percentage
+        elif keyword == "d":
+            return TrackFmt.__fmt_day
+        elif keyword == "H":
+            return TrackFmt.__fmt_hours
+        elif keyword == "M":
+            return TrackFmt.__fmt_minutes
+        elif keyword == "m":
+            return TrackFmt.__fmt_month
+        elif keyword == "S":
+            return TrackFmt.__fmt_second
+        elif keyword == "s":
+            return TrackFmt.__fmt_speech
+        elif keyword == "t":
+            return TrackFmt.__fmt_track_number
+        elif keyword == "y":
+            return TrackFmt.__fmt_year
+        elif keyword == "Y":
+            return TrackFmt.__fmt_fullyear
+        else:
+            raise NotImplementedError
+
+    # Fmt functions
+    @staticmethod
+    def __fmt_none(t: Track) -> str:
+        return ""
+
+    @staticmethod
+    def __fmt_percentage(t: Track) -> str:
+        return "%%"
+
+    @staticmethod
+    def __fmt_day(t: Track) -> str:
+        now = datetime.now()
+        return now.strftime("%d")
+
+    @staticmethod
+    def __fmt_hours(t: Track) -> str:
+        now = datetime.now()
+        return now.strftime("%H")
+
+    @staticmethod
+    def __fmt_minutes(t: Track) -> str:
+        now = datetime.now()
+        return now.strftime("%M")
+
+    @staticmethod
+    def __fmt_month(t: Track) -> str:
+        now = datetime.now()
+        return now.strftime("%m")
+
+    @staticmethod
+    def __fmt_second(t: Track) -> str:
+        now = datetime.now()
+        return now.strftime("%S")
+
+    @staticmethod
+    def __fmt_speech(t: Track) -> str:
+        return t.speech
+
+    @staticmethod
+    def __fmt_track_number(t: Track) -> str:
+        return t.index
+
+    @staticmethod
+    def __fmt_year(t: Track) -> str:
+        now = datetime.now()
+        return now.strftime("%y")
+
+    @staticmethod
+    def __fmt_fullyear(t: Track) -> str:
+        now = datetime.now()
+        return now.strftime("%Y")
 
 
 class FmtTask(ITask):
     """A task to format track names"""
 
-    def __init__(self, track: Track, fmt: str) -> None:
+    def __init__(self, track: Track, callchain: TrackFmt) -> None:
         super().__init__()
         self.__track = track
-        if not FmtTask.validate_fmt(fmt):
-            raise Exception("Invalid fmt string: %s" % fmt)
-        self.__fmt = fmt
+        self.__callchain = callchain
 
     def run(self) -> str:
-        raise NotImplementedError
+        return self.__callchain.fmt("", self.__track)
 
     @staticmethod
-    def validate_fmt(f: str) -> bool:
-        """Valida fmt syntax"""
+    def validate_fmt(f: str) -> Callchain:
+        """Validate fmt syntax"""
         raise NotImplementedError

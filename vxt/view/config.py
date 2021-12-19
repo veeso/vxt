@@ -86,9 +86,10 @@ class Config(object):
 
     @output_fmt.setter
     def output_fmt(self, fmt: str) -> None:
-        if not FmtTask.validate_fmt(fmt):
-            raise InvalidConfigError("Invalid fmt syntax")
-        self.__output_fmt = fmt
+        try:
+            self.__output_fmt = FmtTask.validate_fmt(fmt)
+        except Exception as e:
+            raise InvalidConfigError("Invalid fmt syntax: %s" % e)
 
     @property
     def output_dir(self) -> str:

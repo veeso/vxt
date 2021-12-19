@@ -32,7 +32,6 @@ class Track(Audio):
     def __init__(self, audio: AudioSegment, index: int, name: str = None) -> None:
         super().__init__()
         self.__audio = audio
-        self.__name = name
         self.__index = index
         self.__speech = ""
 
