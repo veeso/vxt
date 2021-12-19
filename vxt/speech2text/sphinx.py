@@ -23,13 +23,12 @@
 from ..audio.audio import Audio
 from ..audio.processor import AudioProcessor
 from .engine import Speech2TextEngine
-from .error import Speech2TextError
 from io import BytesIO
 import speech_recognition as sr
 from typing import Optional
 
 
-class GoogleSpeech2TextEngine(Speech2TextEngine):
+class SphinxSpeech2TextEngine(Speech2TextEngine):
     """A speech2text engine which uses the Google API"""
 
     def __init__(
@@ -51,5 +50,5 @@ class GoogleSpeech2TextEngine(Speech2TextEngine):
                 return self.__engine.recognize_sphinx(
                     audio_source, language, self.__keyword_entries, self.__grammar_file
                 )
-        except Exception as e:
-            raise Speech2TextError("Speech recognition error: %s" % e)
+        except Exception:
+            return None

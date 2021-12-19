@@ -20,52 +20,24 @@
 # SOFTWARE.
 #
 
-from .audio import Audio, AudioSegment
+from ..task import Task as ITask
+from vxt.audio.track import Track
 
 
-class Track(Audio):
-    """
-    Track identifies an audio chunk taken from another `Audio`.
-    The track has not a physical location and is considered to be a mutable audio entity
-    """
+class FmtTask(ITask):
+    """A task to format track names"""
 
-    def __init__(self, audio: AudioSegment, index: int, name: str = None) -> None:
+    def __init__(self, track: Track, fmt: str) -> None:
         super().__init__()
-        self.__audio = audio
-        self.__name = name
-        self.__index = index
-        self.__speech = ""
+        self.__track = track
+        if not FmtTask.validate_fmt(fmt):
+            raise Exception("Invalid fmt string: %s" % fmt)
+        self.__fmt = fmt
 
-    @property
-    def audio(self) -> AudioSegment:
-        return self.__audio
+    def run(self) -> str:
+        raise NotImplementedError
 
-    @property
-    def slug(self) -> str:
-        if self.__name:
-            return self.__name
-        else:
-            return ""
-
-    @property
-    def speech(self) -> str:
-        return self.__speech
-
-    @speech.setter
-    def speech(self, s: str) -> None:
-        self.__speech = s
-
-    @property
-    def index(self) -> int:
-        return self.__index
-
-    @index.setter
-    def index(self, i: int) -> None:
-        self.__index = i
-
-    def set_audio(self, audio: AudioSegment) -> None:
-        self._audio = audio
-
-    def set_name(self, name: str) -> None:
-        """Set new name for `Track`"""
-        self.__name = name
+    @staticmethod
+    def validate_fmt(f: str) -> bool:
+        """Valida fmt syntax"""
+        raise NotImplementedError

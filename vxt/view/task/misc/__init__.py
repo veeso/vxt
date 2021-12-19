@@ -19,34 +19,3 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-
-from ..audio.audio import Audio
-from ..audio.processor import AudioProcessor
-from .engine import Speech2TextEngine
-from io import BytesIO
-import speech_recognition as sr
-from typing import Optional
-
-
-class HoundifySpeech2TextEngine(Speech2TextEngine):
-    """A speech2text engine which uses the Houndify speech2text"""
-
-    def __init__(self, client_id: str, client_key: str) -> None:
-        super().__init__()
-        self.__engine = sr.Recognizer()
-        self.__audio_proc = AudioProcessor()
-        self.__client_id = client_id
-        self.__client_key = client_key
-
-    def get_speech(self, audio: Audio, language: str) -> Optional[str]:
-        try:
-            audio_data = BytesIO()
-            audio.audio.export(audio_data, "wav")
-            sr_audio = sr.AudioFile(audio_data)
-            with sr_audio as source:
-                audio_source = self.__engine.record(source)
-                return self.__engine.recognize_houndify(
-                    audio_source, self.__client_id, self.__client_key, show_all=False
-                )
-        except Exception:
-            return None

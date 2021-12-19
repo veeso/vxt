@@ -20,17 +20,17 @@
 # SOFTWARE.
 #
 
+from ..task import Task as ITask
+from vxt.audio.audio import Audio
+from vxt.audio.processor import AudioProcessor
 
-class Speech2TextError(Exception):
-    """
-    Speech2Text error
-    """
 
-    def __init__(self, message: str):
-        self.message = message
+class NormalizeTask(ITask):
+    """A task to normalize audio"""
 
-    def __str__(self):
-        return repr(self.message)
+    def __init__(self, audio: Audio) -> None:
+        super().__init__()
+        self.__audio = audio
 
-    def __repr__(self):
-        return str(self.message)
+    def run(self) -> Audio:
+        return AudioProcessor().normalize(self.__audio)

@@ -55,7 +55,7 @@ class AudioProcessor(object):
                 silence_thresh=silence_threshold,
                 keep_silence=keep_silence,
             )
-            return list(map(lambda x: Track(x), chunks))
+            return list(map(lambda x: Track(x[1], x[0]), enumerate(chunks)))
         except Exception as e:
             raise AudioError("Failed to split audio: %s" % e)
 

@@ -20,52 +20,18 @@
 # SOFTWARE.
 #
 
-from .audio import Audio, AudioSegment
+from .config import Config
+from typing import List
+from vxt.audio.audio_source import AudioSource
+from vxt.audio.track import Track
 
 
-class Track(Audio):
-    """
-    Track identifies an audio chunk taken from another `Audio`.
-    The track has not a physical location and is considered to be a mutable audio entity
-    """
+class Context(object):
+    """Application context"""
 
-    def __init__(self, audio: AudioSegment, index: int, name: str = None) -> None:
+    def __init__(self, config: Config, source: AudioSource) -> None:
         super().__init__()
-        self.__audio = audio
-        self.__name = name
-        self.__index = index
-        self.__speech = ""
-
-    @property
-    def audio(self) -> AudioSegment:
-        return self.__audio
-
-    @property
-    def slug(self) -> str:
-        if self.__name:
-            return self.__name
-        else:
-            return ""
-
-    @property
-    def speech(self) -> str:
-        return self.__speech
-
-    @speech.setter
-    def speech(self, s: str) -> None:
-        self.__speech = s
-
-    @property
-    def index(self) -> int:
-        return self.__index
-
-    @index.setter
-    def index(self, i: int) -> None:
-        self.__index = i
-
-    def set_audio(self, audio: AudioSegment) -> None:
-        self._audio = audio
-
-    def set_name(self, name: str) -> None:
-        """Set new name for `Track`"""
-        self.__name = name
+        # Init context
+        self.__source = source
+        self.__tracks: List[Track] = []
+        self.__config = config

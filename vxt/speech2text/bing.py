@@ -23,7 +23,6 @@
 from ..audio.audio import Audio
 from ..audio.processor import AudioProcessor
 from .engine import Speech2TextEngine
-from .error import Speech2TextError
 from io import BytesIO
 import speech_recognition as sr
 from typing import Optional
@@ -48,5 +47,5 @@ class BingSpeech2TextEngine(Speech2TextEngine):
                 return self.__engine.recognize_bing(
                     audio_source, self.__api_key, language, show_all=False
                 )
-        except Exception as e:
-            raise Speech2TextError("Speech recognition error: %s" % e)
+        except Exception:
+            return None
