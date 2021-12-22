@@ -19,18 +19,3 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-
-from .config import Config
-from vxt.audio.audio_source import AudioSource
-from vxt.audio.playlist import Playlist
-
-
-class Context(object):
-    """Application context"""
-
-    def __init__(self, config: Config, source: AudioSource) -> None:
-        super().__init__()
-        # Init context
-        self.__config = config
-        self.__playlist: Playlist = Playlist([])
-        self.__source = source

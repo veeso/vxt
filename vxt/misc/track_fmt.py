@@ -20,7 +20,6 @@
 # SOFTWARE.
 #
 
-from ..task import Task as ITask
 from datetime import datetime
 import re
 from typing import List, Callable, Any, Optional
@@ -41,6 +40,7 @@ class TrackFmt(object):
     - %%: print percentage symbol
     - %d: current day
     - %H: current hours
+    - %I: current timestamp ISO8601 syntax
     - %M: current minutes
     - %m: current month
     - %S: current seconds
@@ -100,6 +100,8 @@ class TrackFmt(object):
             return TrackFmt.__fmt_day
         elif keyword == "H":
             return TrackFmt.__fmt_hours
+        elif keyword == "I":
+            return TrackFmt.__fmt_iso8601
         elif keyword == "M":
             return TrackFmt.__fmt_minutes
         elif keyword == "m":
@@ -137,6 +139,11 @@ class TrackFmt(object):
         return now.strftime("%H")
 
     @staticmethod
+    def __fmt_iso8601(t: Track) -> str:
+        now = datetime.now()
+        return now.astimezone().strftime("%Y-%m-%dT%H:%M:%S%z")
+
+    @staticmethod
     def __fmt_minutes(t: Track) -> str:
         now = datetime.now()
         return now.strftime("%M")
@@ -153,11 +160,11 @@ class TrackFmt(object):
 
     @staticmethod
     def __fmt_speech(t: Track) -> str:
-        return t.speech
+        return t.speech.replace(" ", "_")
 
     @staticmethod
     def __fmt_track_number(t: Track) -> str:
-        return t.index
+        return t.index + 1
 
     @staticmethod
     def __fmt_year(t: Track) -> str:
@@ -168,20 +175,3 @@ class TrackFmt(object):
     def __fmt_fullyear(t: Track) -> str:
         now = datetime.now()
         return now.strftime("%Y")
-
-
-class FmtTask(ITask):
-    """A task to format track names"""
-
-    def __init__(self, track: Track, callchain: TrackFmt) -> None:
-        super().__init__()
-        self.__track = track
-        self.__callchain = callchain
-
-    def run(self) -> str:
-        return self.__callchain.fmt("", self.__track)
-
-    @staticmethod
-    def validate_fmt(f: str) -> Callchain:
-        """Validate fmt syntax"""
-        raise NotImplementedError

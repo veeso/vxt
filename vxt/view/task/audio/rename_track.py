@@ -20,17 +20,18 @@
 # SOFTWARE.
 #
 
-from .config import Config
-from vxt.audio.audio_source import AudioSource
-from vxt.audio.playlist import Playlist
+from ..task import Task as ITask
+from vxt.audio.playlist import Track
+from vxt.misc.track_fmt import TrackFmt
 
 
-class Context(object):
-    """Application context"""
+class RenameTrackTask(ITask):
+    """A task to rename track according to provided format"""
 
-    def __init__(self, config: Config, source: AudioSource) -> None:
+    def __init__(self, track: Track, fmt: TrackFmt) -> None:
         super().__init__()
-        # Init context
-        self.__config = config
-        self.__playlist: Playlist = Playlist([])
-        self.__source = source
+        self.__track = track
+        self.__fmt = fmt
+
+    def run(self) -> str:
+        return self.__fmt.fmt("", self.__track)

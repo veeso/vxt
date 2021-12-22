@@ -20,55 +20,18 @@
 # SOFTWARE.
 #
 
-from .audio import Audio, AudioSegment
-from typing import Optional
+from ..task import Task as ITask
+from vxt.audio.playlist import Playlist
 
 
-class Track(Audio):
-    """
-    Track identifies an audio chunk taken from another `Audio`.
-    The track has not a physical location and is considered to be a mutable audio entity
-    """
+class DeleteTrackTask(ITask):
+    """A task to delete a certain track from playlist audio"""
 
-    def __init__(self, audio: AudioSegment, index: int, name: str = None) -> None:
+    def __init__(self, playlist: Playlist, index: int) -> None:
         super().__init__()
-        self.__audio = audio
+        self.__playlist = playlist
         self.__index = index
-        self.__speech = ""
 
-    @property
-    def audio(self) -> AudioSegment:
-        return self.__audio
-
-    @property
-    def slug(self) -> str:
-        if self.__name:
-            return self.__name
-        else:
-            return ""
-
-    @property
-    def speech(self) -> str:
-        return self.__speech
-
-    @speech.setter
-    def speech(self, s: Optional[str]) -> None:
-        if s:
-            self.__speech = s
-        else:
-            self.__speech = ""
-
-    @property
-    def index(self) -> int:
-        return self.__index
-
-    @index.setter
-    def index(self, i: int) -> None:
-        self.__index = i
-
-    def set_audio(self, audio: AudioSegment) -> None:
-        self._audio = audio
-
-    def set_name(self, name: str) -> None:
-        """Set new name for `Track`"""
-        self.__name = name
+    def run(self) -> Playlist:
+        self.__playlist.remove(self.__index)
+        return self.__playlist

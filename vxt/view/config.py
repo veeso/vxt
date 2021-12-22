@@ -21,7 +21,7 @@
 #
 
 from typing import Optional
-from .task.misc.fmt import FmtTask
+from vxt.misc.track_fmt import TrackFmt
 from vxt.speech2text.engine import Speech2TextEngine
 from vxt.speech2text.bing import BingSpeech2TextEngine
 from vxt.speech2text.google import GoogleSpeech2TextEngine
@@ -40,7 +40,7 @@ class Config(object):
         self.__min_silence_len: int = 500
         self.__silence_threshold: int = -16
         self.__keep_silence: Optional[int] = None
-        self.__output_fmt: str = ""  # TODO: set fmt
+        self.__output_fmt: str = "%t-%s.24"
         self.__output_dir: Optional[str] = None
 
     @property
@@ -48,7 +48,7 @@ class Config(object):
         if self.__engine:
             return self.__engine
         else:
-            raise InvalidConfigError("Engine hasn't been set")
+            raise InvalidConfigError("Engine hasn't been initialized yet")
 
     @property
     def min_silence_len(self) -> int:
@@ -87,9 +87,9 @@ class Config(object):
     @output_fmt.setter
     def output_fmt(self, fmt: str) -> None:
         try:
-            self.__output_fmt = FmtTask.validate_fmt(fmt)
-        except Exception as e:
-            raise InvalidConfigError("Invalid fmt syntax: %s" % e)
+            self.__output_fmt = TrackFmt(fmt)
+        except Exception:
+            raise InvalidConfigError("Invalid fmt syntax")
 
     @property
     def output_dir(self) -> str:
