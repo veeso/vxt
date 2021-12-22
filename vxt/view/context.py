@@ -31,6 +31,40 @@ class Context(object):
     def __init__(self, config: Config, source: AudioSource) -> None:
         super().__init__()
         # Init context
-        self.__config = config
+        self.__config: Config = config
+        self.__source: AudioSource = source
+        # runtime params
         self.__playlist: Playlist = Playlist([])
-        self.__source = source
+        self.__track_cursor: int = 0
+
+    @property
+    def config(self) -> Config:
+        return self.__config
+
+    @property
+    def source(self) -> AudioSource:
+        return self.__source
+
+    # -- runtime props
+
+    @property
+    def playlist(self) -> Playlist:
+        return self.__playlist
+
+    @playlist.setter
+    def playlist(self, p: Playlist):
+        self.__playlist = p
+
+    @property
+    def cursor(self) -> int:
+        return self.__track_cursor
+
+    def cursor_up(self):
+        """Move track cursor up"""
+        if self.cursor + 1 < self.playlist.length:
+            self.__track_cursor += 1
+
+    def cursor_down(self):
+        """Move track cursor down"""
+        if self.cursor > 0:
+            self.__track_cursor -= 1

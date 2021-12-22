@@ -27,7 +27,7 @@ from vxt.audio.processor import AudioProcessor
 from typing import List
 
 
-class SplitTask(ITask):
+class SplitSilenceTask(ITask):
     """A task to split audio by silence into tracks"""
 
     def __init__(
