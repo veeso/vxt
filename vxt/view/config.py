@@ -20,6 +20,7 @@
 # SOFTWARE.
 #
 
+from locale import getdefaultlocale
 from typing import Optional
 from vxt.misc.track_fmt import TrackFmt
 from vxt.speech2text.engine import Speech2TextEngine
@@ -37,6 +38,11 @@ class Config(object):
     def __init__(self) -> None:
         super().__init__()
         self.__engine: Optional[Speech2TextEngine] = None
+        locale = getdefaultlocale()[0]
+        if locale:
+            self.__language: str = locale
+        else:
+            self.__language: str = "en_US"
         self.__min_silence_len: int = 500
         self.__silence_threshold: int = -16
         self.__keep_silence: Optional[int] = None
@@ -49,6 +55,14 @@ class Config(object):
             return self.__engine
         else:
             raise InvalidConfigError("Engine hasn't been initialized yet")
+
+    @property
+    def language(self) -> str:
+        return self.__language
+
+    @language.setter
+    def language(self, l: str) -> None:
+        self.__language = l
 
     @property
     def min_silence_len(self) -> int:
