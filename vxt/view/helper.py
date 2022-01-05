@@ -23,6 +23,7 @@
 # from PyInquirer i
 from PyInquirer import prompt
 from typing import List, Callable, Any, Optional, Union
+from termcolor import colored
 
 Validate = Callable[[str], Union[bool, str]]
 Filter = Callable[[str], Any]
@@ -66,3 +67,11 @@ class ViewHelper(object):
         ]
         result = prompt(questions)["result"]
         return result
+
+    def error(self, text: str) -> None:
+        """Print error message"""
+        print(colored(text, "red"))
+
+    def info(self, text: str) -> None:
+        """Print info message"""
+        print(colored(text, "yellow"))

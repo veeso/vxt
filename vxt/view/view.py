@@ -20,9 +20,10 @@
 # SOFTWARE.
 #
 
+from ..audio.playlist import Playlist
+from .args import CliArgs
 from .context import Context
 from .helper import ViewHelper
-from .args import CliArgs
 from .task.factory import (
     TaskFactory,
     AmplifyTask,
@@ -35,9 +36,12 @@ from .task.factory import (
     SplitTrackTask,
     SpeechTask,
 )
+from .validator import Validator
 
 
 from enum import Enum
+from typing import Optional
+from yaspin import yaspin
 
 
 class State(Enum):
@@ -79,20 +83,67 @@ class View(object):
 
     def __trackify_source(self) -> None:
         """Run trackify source state"""
-        # TODO:
+        self.__vh.info("Preparing configuration to split audio by silence…")
+        # ask for parameters
+        user_input: Optional[int] = self.__vh.input(
+            "Enter minimum silence (default 500ms): ",
+            Validator.validate_optional_positive_number,
+            Validator.filter_optional_positive_number,
+        )
+        if user_input:
+            self.__ctx.config.min_silence_len = user_input
+        user_input = self.__vh.input(
+            "Enter silence threshold (default -16dB): ",
+            Validator.validate_optional_positive_number,
+            Validator.filter_optional_positive_number,
+        )
+        if user_input:
+            self.__ctx.config.silence_threshold = user_input
+        user_input = self.__vh.input(
+            "Enter the amount of silence to keep at the end of each track (default 0): ",
+            Validator.validate_optional_positive_number,
+            Validator.filter_optional_positive_number,
+        )
+        if user_input:
+            self.__ctx.config.keep_silence = user_input
+        # let's make cli args for task
+        args = CliArgs(
+            ["min_silence_len", "silence_threshold", "keep_silence"],
+            [
+                self.__ctx.config.min_silence_len,
+                self.__ctx.config.silence_threshold,
+                self.__ctx.config.keep_silence,
+            ],
+        )
+        task = TaskFactory.make(SplitSilenceTask, self.__ctx, args)
+        with yaspin(text="Splitting audio into tracks…") as spinner:
+            try:
+                self.__ctx.playlist = Playlist(task.run())
+                spinner.ok("✔️")
+            except Exception as e:
+                spinner.fail("❌")
+                self.__vh.error("failed to split audio source: %s" % e)
+                self.__state = State.EXIT
+                return
+        # get speech for tracks
+        for i in range(0, self.__ctx.playlist.length):
+            with yaspin(
+                text="Getting speech for tracks (%d/%d)"
+                % (i + 1, self.__ctx.playlist.length)
+            ) as spinner:
+                task = SpeechTask(
+                    self.__ctx.config.engine,
+                    self.__ctx.playlist.get(i),
+                    self.__ctx.config.language,
+                )
+                # Try to get speech for track
+                try:
+                    self.__ctx.playlist.replace(task.run(), i)
+                except Exception as e:
+                    spinner.fail("❌")
+                    self.__vh.error("failed to split audio source: %s" % e)
+                    self.__state = State.EXIT
+                    return
+                spinner.ok("✔️")
         # set new state to `TRACKS_LIST_MENU`
         self.__state = State.TRACKS_LIST_MENU
-
-
-"""
-questions = [
-    {
-        "type": "input",
-        "name": "result",
-        "message": "porcoddue",
-        "validate": lambda x : True if x == "5" else "diocannone",
-        "filter": lambda x : 10
-    },
-]
-prompt(questions)
-"""
