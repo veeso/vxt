@@ -20,7 +20,7 @@
 # SOFTWARE.
 #
 
-from typing import List
+from typing import List, Any
 
 
 class Argument(object):
@@ -31,7 +31,7 @@ class Argument(object):
         self.__value = arg.strip()
 
     def as_str(self) -> str:
-        return self.__value
+        return str(self.__value)
 
     def as_int(self) -> int:
         return int(self.__value)
@@ -43,7 +43,7 @@ class Argument(object):
 class CliArgs(object):
     """Command line arguments"""
 
-    def __init__(self, keys: List[str], values: List[str]) -> None:
+    def __init__(self, keys: List[str], values: List[Any]) -> None:
         super().__init__()
         self.__args = {keys[i]: Argument(values[i]) for i in range(len(keys))}
 

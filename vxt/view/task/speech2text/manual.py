@@ -20,45 +20,18 @@
 # SOFTWARE.
 #
 
-from .config import Config
-from vxt.audio.audio_source import AudioSource
-from vxt.audio.playlist import Playlist
+from ..task import Task as ITask
+from vxt.audio.track import Track
 
 
-class Context(object):
-    """Application context"""
+class ManualSpeechTask(ITask):
+    """A task to set speech manually for a track"""
 
-    def __init__(self, config: Config, source: AudioSource) -> None:
+    def __init__(self, track: Track, speech: str) -> None:
         super().__init__()
-        # Init context
-        self.__config: Config = config
-        self.__source: AudioSource = source
-        # runtime params
-        self.__playlist: Playlist = Playlist([])
-        self.__track_cursor: int = 0
+        self.__track = track
+        self.__speech = speech
 
-    @property
-    def config(self) -> Config:
-        return self.__config
-
-    @property
-    def source(self) -> AudioSource:
-        return self.__source
-
-    # -- runtime props
-
-    @property
-    def playlist(self) -> Playlist:
-        return self.__playlist
-
-    @playlist.setter
-    def playlist(self, p: Playlist):
-        self.__playlist = p
-
-    @property
-    def cursor(self) -> int:
-        return self.__track_cursor
-
-    @cursor.setter
-    def cursor(self, v: int) -> None:
-        self.__track_cursor = v
+    def run(self) -> Track:
+        self.__track.speech = self.__speech
+        return self.__track

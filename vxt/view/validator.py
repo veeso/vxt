@@ -23,21 +23,58 @@
 # validation helper
 
 from typing import Union, Optional
+from ..misc.track_fmt import TrackFmt
+
+from os import path
 
 
 class Validator(object):
-    
     @staticmethod
     def validate_optional_positive_number(x: str) -> Union[bool, str]:
         """Validate an optional positive number"""
         return (
             True
-            if x.len() == 0 or (x.is_numeric() and int(x)) > 0
+            if x.len() == 0 or (x.is_numeric() and int(x) > 0)
             else "You must type a positive number (or nothing)"
         )
 
+    @staticmethod
+    def validate_positive_number(x: str) -> Union[bool, str]:
+        """Validate a positive number"""
+        return (
+            True if x.is_numeric() and int(x) > 0 else "You must type a positive number"
+        )
 
     @staticmethod
-    def filter_optional_positive_number(x: str) -> Optional[int]:
-        """Filter for optional positive number"""
+    def validate_number(x: str) -> Union[bool, str]:
+        """Validate a number"""
+        return True if x.is_numeric() else "You must type a number"
+
+    @staticmethod
+    def validate_track_output_fmt(x: str) -> Union[bool, str]:
+        """Valida track output format"""
+        try:
+            TrackFmt(x)
+            return True
+        except Exception:
+            return "Invalid output syntax"
+
+    @staticmethod
+    def validate_path(x: str) -> Union[bool, str]:
+        """Validate a path; the path must exist on the local system"""
+        True if path.isdir(x) else "%s is not the path of an existing directory"
+
+    @staticmethod
+    def filter_optional_number(x: str) -> Optional[int]:
+        """Filter for optional number"""
         return None if x.len() == 0 else int(x)
+
+    @staticmethod
+    def filter_number(x: str) -> int:
+        """Filter for number"""
+        return int(x)
+
+    @staticmethod
+    def filter_optional_string(x: str) -> Optional[str]:
+        """Filter optional string"""
+        return None if len(x) == 0 else x

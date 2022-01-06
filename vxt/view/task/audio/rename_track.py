@@ -21,17 +21,21 @@
 #
 
 from ..task import Task as ITask
-from vxt.audio.playlist import Track
+from vxt.audio.playlist import Playlist
 from vxt.misc.track_fmt import TrackFmt
 
 
-class RenameTrackTask(ITask):
-    """A task to rename track according to provided format"""
+class RenameTracksTask(ITask):
+    """A task to rename tracks according to provided format"""
 
-    def __init__(self, track: Track, fmt: TrackFmt) -> None:
+    def __init__(self, playlist: Playlist, fmt: TrackFmt) -> None:
         super().__init__()
-        self.__track = track
+        self.__playlist = playlist
         self.__fmt = fmt
 
-    def run(self) -> str:
-        return self.__fmt.fmt("", self.__track)
+    def run(self) -> Playlist:
+        for i in range(0, self.__playlist.length):
+            track = self.__playlist.get(i)
+            track.slug = self.__fmt.fmt("", track)
+            self.__playlist.replace(track, i)
+        return self.__playlist

@@ -34,9 +34,10 @@ from .audio.delete_track import DeleteTrackTask
 from .audio.export import ExportTask
 from .audio.normalize import NormalizeTask
 from .audio.play import PlayTask
-from .audio.rename_track import RenameTrackTask
+from .audio.rename_track import RenameTracksTask
 from .audio.split_silence import SplitSilenceTask
 from .audio.split_track import SplitTrackTask
+from .speech2text.manual import ManualSpeechTask
 from .speech2text.speech import SpeechTask
 
 
@@ -49,14 +50,14 @@ class TaskFactory(object):
         if task == AmplifyTask:
             return TaskFactory.__amplify_task(ctx, cli_args.get("dB").as_int())
         elif task == DeleteTrackTask:
-            return TaskFactory.__delete_track_trask(ctx, cli_args.get("index").as_int())
+            return TaskFactory.__delete_track_trask(ctx)
         elif task == ExportTask:
             return TaskFactory.__export_task(ctx, cli_args.get("format").as_str())
         elif task == NormalizeTask:
             return TaskFactory.__normalize_task(ctx)
         elif task == PlayTask:
             return TaskFactory.__play_task(ctx)
-        elif task == RenameTrackTask:
+        elif task == RenameTracksTask:
             return TaskFactory.__rename_track_task(ctx)
         elif task == SplitSilenceTask:
             return TaskFactory.__split_silence_task(
@@ -69,6 +70,10 @@ class TaskFactory(object):
             return TaskFactory.__split_track_task(ctx, cli_args.get("offset").as_int())
         elif task == SpeechTask:
             return TaskFactory.__speech_task(ctx)
+        elif task == ManualSpeechTask:
+            return TaskFactory.__manual_speech_task(
+                ctx, cli_args.get("speech").as_str()
+            )
         else:
             raise NotImplementedError
 
@@ -77,8 +82,8 @@ class TaskFactory(object):
         return AmplifyTask(TaskFactory.__get_audio(ctx), dB)
 
     @staticmethod
-    def __delete_track_trask(ctx: Context, index: int) -> DeleteTrackTask:
-        return DeleteTrackTask(ctx.playlist, index)
+    def __delete_track_trask(ctx: Context) -> DeleteTrackTask:
+        return DeleteTrackTask(ctx.playlist, ctx.cursor)
 
     @staticmethod
     def __export_task(ctx: Context, format: Optional[str]) -> ExportTask:
@@ -93,8 +98,8 @@ class TaskFactory(object):
         return PlayTask(TaskFactory.__get_audio(ctx))
 
     @staticmethod
-    def __rename_track_task(ctx: Context) -> RenameTrackTask:
-        return RenameTrackTask(TaskFactory.__get_audio(ctx), ctx.config.output_fmt)
+    def __rename_track_task(ctx: Context) -> RenameTracksTask:
+        return RenameTracksTask(ctx.playlist, ctx.config.output_fmt)
 
     @staticmethod
     def __split_silence_task(
@@ -118,6 +123,10 @@ class TaskFactory(object):
         return SpeechTask(
             ctx.config.engine, TaskFactory.__get_audio(ctx), ctx.config.language
         )
+
+    @staticmethod
+    def __manual_speech_task(ctx: Context, speech: str) -> ManualSpeechTask:
+        return ManualSpeechTask(TaskFactory.__get_audio(ctx), speech)
 
     @staticmethod
     def __get_audio(ctx: Context) -> Audio:
