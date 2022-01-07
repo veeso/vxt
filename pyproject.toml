@@ -23,6 +23,7 @@ yaspin = "^2.1.0"
 inquirer = "^2.8.0"
 SpeechRecognition  = "^3.8.0"
 termcolor = "^1.1.0"
+click = "^8.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

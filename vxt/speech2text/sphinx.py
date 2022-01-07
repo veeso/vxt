@@ -21,7 +21,6 @@
 #
 
 from ..audio.audio import Audio
-from ..audio.processor import AudioProcessor
 from .engine import Speech2TextEngine
 from io import BytesIO
 import speech_recognition as sr
@@ -36,7 +35,6 @@ class SphinxSpeech2TextEngine(Speech2TextEngine):
     ) -> None:
         super().__init__()
         self.__engine = sr.Recognizer()
-        self.__audio_proc = AudioProcessor()
         self.__keyword_entries = keyword_entries
         self.__grammar_file = grammar_file
 

@@ -205,7 +205,7 @@ class View(object):
 
     def __prompt_exit(self) -> None:
         """Prompt user fo exit"""
-        if self.__vh.confirm("Are you sure you want to quit VXT? "):
+        if self.__vh.confirm("Do you want to quit VXT? "):
             self.__state = State.EXIT
         else:
             self.__state = State.TRACKS_LIST_MENU
@@ -349,9 +349,10 @@ class View(object):
         if fmt:
             self.__ctx.config.output_fmt = fmt
         # output dir
-        self.__ctx.config.output_dir = self.__vh.input(
-            "Output directory: ", Validator.validate_path
-        )
+        if not self.__ctx.config.output_dir:
+            self.__ctx.config.output_dir = self.__vh.input(
+                "Output directory: ", Validator.validate_path
+            )
         # rename tracks
         task = TaskFactory.make(RenameTracksTask, self.__ctx, CliArgs([], []))
         try:
@@ -381,4 +382,6 @@ class View(object):
                     self.__vh.error("failed to export track: %s" % e)
                     return
         # return exit
-        self.__state = State.EXIT
+        self.__vh.info("All tracks have been exported to %s" % self.__ctx.config.output_dir)
+        # ask whether to quit
+        self.__state = State.PROMPT_EXIT

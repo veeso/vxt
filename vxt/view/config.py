@@ -37,7 +37,7 @@ class Config(object):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__engine: Optional[Speech2TextEngine] = None
+        self.__engine: Speech2TextEngine = GoogleSpeech2TextEngine()
         locale = getdefaultlocale()[0]
         if locale:
             self.__language: str = locale
@@ -51,10 +51,7 @@ class Config(object):
 
     @property
     def engine(self) -> Speech2TextEngine:
-        if self.__engine:
-            return self.__engine
-        else:
-            raise InvalidConfigError("Engine hasn't been initialized yet")
+        return self.__engine
 
     @property
     def language(self) -> str:

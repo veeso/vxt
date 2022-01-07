@@ -21,7 +21,6 @@
 #
 
 from ..audio.audio import Audio
-from ..audio.processor import AudioProcessor
 from .engine import Speech2TextEngine
 from io import BytesIO
 import speech_recognition as sr
@@ -34,7 +33,6 @@ class GoogleSpeech2TextEngine(Speech2TextEngine):
     def __init__(self, api_key: Optional[str]) -> None:
         super().__init__()
         self.__engine = sr.Recognizer()
-        self.__audio_proc = AudioProcessor()
         self.__api_key = api_key
 
     def get_speech(self, audio: Audio, language: str) -> Optional[str]:

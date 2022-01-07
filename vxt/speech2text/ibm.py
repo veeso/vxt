@@ -21,7 +21,6 @@
 #
 
 from ..audio.audio import Audio
-from ..audio.processor import AudioProcessor
 from .engine import Speech2TextEngine
 from io import BytesIO
 import speech_recognition as sr
@@ -34,7 +33,6 @@ class IbmSpeech2TextEngine(Speech2TextEngine):
     def __init__(self, username: str, password: str) -> None:
         super().__init__()
         self.__engine = sr.Recognizer()
-        self.__audio_proc = AudioProcessor()
         self.__username = username
         self.__password = password
 
