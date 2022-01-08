@@ -35,12 +35,12 @@ def test_playlist_iter():
 
 def test_playlist_remove():
     playlist = Playlist(
-    [
-        Track(MOCK_AUDIO, 0, "foo"),
-        Track(MOCK_AUDIO, 1, "bar"),
-        Track(MOCK_AUDIO, 2, "omar"),
-    ]
-)
+        [
+            Track(MOCK_AUDIO, 0, "foo"),
+            Track(MOCK_AUDIO, 1, "bar"),
+            Track(MOCK_AUDIO, 2, "omar"),
+        ]
+    )
     playlist.remove(1)
     assert 2 == playlist.length
     assert "foo" == playlist.get(0).slug
@@ -49,12 +49,12 @@ def test_playlist_remove():
 
 def test_playlist_insert():
     playlist = Playlist(
-    [
-        Track(MOCK_AUDIO, 0, "foo"),
-        Track(MOCK_AUDIO, 1, "bar"),
-        Track(MOCK_AUDIO, 2, "omar"),
-    ]
-)
+        [
+            Track(MOCK_AUDIO, 0, "foo"),
+            Track(MOCK_AUDIO, 1, "bar"),
+            Track(MOCK_AUDIO, 2, "omar"),
+        ]
+    )
     playlist.insert(Track(MOCK_AUDIO, 0, "pippo"), 1)
     assert ["foo", "pippo", "bar", "omar"] == list(
         map(lambda x: x.slug, playlist.iter())
@@ -64,12 +64,12 @@ def test_playlist_insert():
 
 def test_playlist_replace():
     playlist = Playlist(
-    [
-        Track(MOCK_AUDIO, 0, "foo"),
-        Track(MOCK_AUDIO, 1, "bar"),
-        Track(MOCK_AUDIO, 2, "omar"),
-    ]
-)
+        [
+            Track(MOCK_AUDIO, 0, "foo"),
+            Track(MOCK_AUDIO, 1, "bar"),
+            Track(MOCK_AUDIO, 2, "omar"),
+        ]
+    )
     playlist.replace(Track(MOCK_AUDIO, 0, "pippo"), 1)
     assert ["foo", "pippo", "omar"] == list(map(lambda x: x.slug, playlist.iter()))
     assert [0, 1, 2] == list(map(lambda x: x.index, playlist.iter()))
@@ -77,11 +77,11 @@ def test_playlist_replace():
 
 def test_playlist_rename():
     playlist = Playlist(
-    [
-        Track(MOCK_AUDIO, 0, "foo"),
-        Track(MOCK_AUDIO, 1, "bar"),
-        Track(MOCK_AUDIO, 2, "omar"),
-    ]
-)
+        [
+            Track(MOCK_AUDIO, 0, "foo"),
+            Track(MOCK_AUDIO, 1, "bar"),
+            Track(MOCK_AUDIO, 2, "omar"),
+        ]
+    )
     playlist.rename_track("pippo", 1)
     assert ["foo", "pippo", "omar"] == list(map(lambda x: x.slug, playlist.iter()))

@@ -29,7 +29,8 @@ class AudioSource(Audio):
     def __init__(self, slug: str, audio: AudioSegment) -> None:
         """
         Initialize a new AudioSource.
-        Slug is a string which identifies the audio source uniquely, such as a file path or a device,
+        Slug is a string which identifies the audio source uniquely,
+        such as a file path or a device,
         while audio is the AudioSegment containing the audio
         """
         super().__init__()

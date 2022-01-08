@@ -34,7 +34,8 @@ FMT_REGEX: str = r"%(?:([%,d,H,I,M,m,S,s,t,y,Y]))(\.(?:(\d+)))?"
 
 class TrackFmt(object):
     """Track filename fmt.
-    The syntax use parameters which must be preceeded by `%`, everything in between will be kept the same.
+    The syntax use parameters which must be preceeded by `%`,
+    everything in between will be kept the same.
     The following parameters are supported.
 
     - %%: print percentage symbol

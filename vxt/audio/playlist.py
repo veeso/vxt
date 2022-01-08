@@ -58,7 +58,8 @@ class Playlist(object):
     def insert(self, track: Track, index: int) -> None:
         """
         Insert `track` into playlist at the provided `index`.
-        If index is less than zero or bigger than the length, the track is just pushed to the end of the list
+        If index is less than zero or bigger than the length,
+        the track is just pushed to the end of the list
         """
         track.index = index
         print(list(map(lambda x: x.slug, self.__tracks)))

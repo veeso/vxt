@@ -48,7 +48,8 @@ from yaspin import yaspin
 class State(Enum):
     """Current step in view state machine"""
 
-    # 1st step; ask user parameters to split by silence, then split audio and get speech recognition
+    # 1st step; ask user parameters to split by silence,
+    # then split audio and get speech recognition
     TRACKIFY_SOURCE = 1
     # 2nd step: show the track menu; this step is recurring
     TRACKS_LIST_MENU = 10
@@ -132,7 +133,8 @@ class View(object):
         if user_input:
             self.__ctx.config.silence_threshold = user_input
         user_input = self.__vh.input(
-            "Enter the amount of silence to keep at the end of each track (default 0ms):",
+            "Enter the amount of silence to keep at the end of each track (default"
+            " 0ms):",
             Validator.validate_optional_positive_number,
             Validator.filter_number,
         )
@@ -160,7 +162,8 @@ class View(object):
         # If paylist length is 0, retry
         if self.__ctx.playlist.length == 0:
             if self.__vh.confirm(
-                "I could not split by silence with the current parameters; would you like to retry with other parameters?"
+                "I could not split by silence with the current parameters; would you"
+                " like to retry with other parameters?"
             ):
                 self.__state = State.TRACKIFY_SOURCE
                 return
@@ -275,7 +278,8 @@ class View(object):
         self.__state = State.TRACK_TASK_MENU
 
     def __delete_track(self) -> None:
-        """Prompt user wheter he wants to delete the selected track; in case of affermative answer, delete track"""
+        """Prompt user wheter he wants to delete the selected track;
+        in case of affermative answer, delete track"""
         if self.__vh.confirm("Are you sure you want to delete this track? "):
             task = TaskFactory.make(DeleteTrackTask, self.__ctx, CliArgs([], []))
             self.__ctx.playlist = task.run()
@@ -333,7 +337,8 @@ class View(object):
         # prompt for output format
         self.__vh.info("To export tracks, you need to provide an output format:")
         self.__vh.info(
-            "The syntax use parameters which must be preceeded by `%`, everything in between will be kept the same."
+            "The syntax use parameters which must be preceeded by `%`, everything in"
+            " between will be kept the same."
         )
         self.__vh.info("The following parameters are supported:")
         self.__vh.info("")

@@ -7,7 +7,7 @@ from locale import getdefaultlocale
 
 def test_new_config():
     locale = getdefaultlocale()[0]
-    if not locale:
+    if locale is None:
         locale = "en_US"
     config = Config()
     assert isinstance(config.engine, GoogleSpeech2TextEngine)
@@ -16,7 +16,7 @@ def test_new_config():
     assert -16 == config.silence_threshold
     assert 0 == config.keep_silence
     assert str(TrackFmt("%t-%s.24")) == str(config.output_fmt)
-    assert None == config.output_dir
+    assert config.output_dir is None
 
 
 def test_set_config():

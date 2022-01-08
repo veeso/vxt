@@ -58,8 +58,8 @@ class Config(object):
         return self.__language
 
     @language.setter
-    def language(self, l: str) -> None:
-        self.__language = l
+    def language(self, language: str) -> None:
+        self.__language = language
 
     @property
     def min_silence_len(self) -> int:

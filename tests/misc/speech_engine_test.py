@@ -191,6 +191,7 @@ def test_init_speech_engine_ibm_error():
             grammar_file=None,
         )
 
+
 def test_init_speech_engine_sphinx():
     assert (
         CONFIG.engine
