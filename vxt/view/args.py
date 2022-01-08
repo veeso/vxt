@@ -26,9 +26,9 @@ from typing import List, Any
 class Argument(object):
     """A single command line argument"""
 
-    def __init__(self, arg: str) -> None:
+    def __init__(self, arg: Any) -> None:
         super().__init__()
-        self.__value = arg.strip()
+        self.__value = arg
 
     def as_str(self) -> str:
         return str(self.__value)

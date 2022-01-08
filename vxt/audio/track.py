@@ -47,6 +47,10 @@ class Track(Audio):
         else:
             return ""
 
+    @slug.setter
+    def slug(self, s: str) -> None:
+        self.__name = s
+
     @property
     def speech(self) -> str:
         return self.__speech
@@ -67,7 +71,7 @@ class Track(Audio):
         self.__index = i
 
     def set_audio(self, audio: AudioSegment) -> None:
-        self._audio = audio
+        self.__audio = audio
 
     def set_name(self, name: str) -> None:
         """Set new name for `Track`"""

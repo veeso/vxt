@@ -37,7 +37,7 @@ class Config(object):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__engine: Speech2TextEngine = GoogleSpeech2TextEngine()
+        self.__engine: Speech2TextEngine = GoogleSpeech2TextEngine(None)
         locale = getdefaultlocale()[0]
         if locale:
             self.__language: str = locale
@@ -45,7 +45,7 @@ class Config(object):
             self.__language: str = "en_US"
         self.__min_silence_len: int = 500
         self.__silence_threshold: int = -16
-        self.__keep_silence: Optional[int] = None
+        self.__keep_silence: int = 0
         self.__output_fmt: str = "%t-%s.24"
         self.__output_dir: Optional[str] = None
 
@@ -63,7 +63,7 @@ class Config(object):
 
     @property
     def min_silence_len(self) -> int:
-        self.__min_silence_len
+        return self.__min_silence_len
 
     @min_silence_len.setter
     def min_silence_len(self, len: int) -> None:
@@ -80,14 +80,14 @@ class Config(object):
         self.__silence_threshold = t
 
     @property
-    def keep_silence(self) -> Optional[int]:
+    def keep_silence(self) -> int:
         return self.__keep_silence
 
     @keep_silence.setter
     def keep_silence(self, how_much: int) -> None:
-        if how_much <= 0:
+        if how_much < 0:
             raise InvalidConfigError(
-                "Keep silence should be a positive integer bigger than 0"
+                "Keep silence should be a positive integer bigger than or equal to 0"
             )
         self.__keep_silence = how_much
 
@@ -104,7 +104,7 @@ class Config(object):
 
     @property
     def output_dir(self) -> str:
-        self.__output_dir
+        return self.__output_dir
 
     @output_dir.setter
     def output_dir(self, d: str) -> None:

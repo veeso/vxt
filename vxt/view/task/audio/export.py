@@ -23,16 +23,22 @@
 from ..task import Task as ITask
 from vxt.audio.track import Track
 from vxt.audio.processor import AudioProcessor
+
+import os.path
 from typing import Optional
 
 
 class ExportTask(ITask):
     """A task to export tracks"""
 
-    def __init__(self, track: Track, format: Optional[str]) -> None:
+    def __init__(self, track: Track, format: Optional[str], output_dir: str) -> None:
         super().__init__()
         self.__track = track
         self.__format = format
+        self.__output_dir = output_dir
 
     def run(self) -> None:
-        AudioProcessor().export(self.__track, self.__track.slug, self.__format)
+        path = os.path.join(self.__output_dir, self.__track.slug)
+        if self.__format:
+            path = "%s.%s" % (path, self.__format)
+        AudioProcessor().export(self.__track, path, self.__format)

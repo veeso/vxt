@@ -87,7 +87,7 @@ class TaskFactory(object):
 
     @staticmethod
     def __export_task(ctx: Context, format: Optional[str]) -> ExportTask:
-        return ExportTask(TaskFactory.__get_audio(ctx), ctx.config.output_fmt)
+        return ExportTask(TaskFactory.__get_audio(ctx), format, ctx.config.output_dir)
 
     @staticmethod
     def __normalize_task(ctx: Context) -> NormalizeTask:

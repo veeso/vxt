@@ -76,3 +76,4 @@ def init_speech_engine(
         config.use_sphinx_speech2text(keyword_entries, grammar_file)
     else:
         raise Exception("Unknown speech2text engine: %s" % engine)
+    return config

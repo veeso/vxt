@@ -53,6 +53,7 @@ class TrackFmt(object):
 
     def __init__(self, fmt: str, regex: Optional[Any] = None) -> None:
         super().__init__()
+        self.__fmt = fmt
         if not regex:
             regex = re.compile(FMT_REGEX)
         self.__build(fmt, regex)
@@ -78,7 +79,10 @@ class TrackFmt(object):
             self.__prepend = wrkstr[: result.start()]
             # Parse
             keyword = result.group(1)
-            self.__len = result.group(3)
+            if result.group(3):
+                self.__len = int(result.group(3))
+            else:
+                self.__len = None
             # Get new working string
             wrkstr = wrkstr[result.end() :]
             # Get func
@@ -175,3 +179,9 @@ class TrackFmt(object):
     def __fmt_fullyear(t: Track) -> str:
         now = datetime.now()
         return now.strftime("%Y")
+
+    def __repr__(self) -> str:
+        return repr(self.__fmt)
+
+    def __str__(self) -> str:
+        return self.__fmt

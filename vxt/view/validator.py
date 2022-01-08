@@ -34,21 +34,30 @@ class Validator(object):
         """Validate an optional positive number"""
         return (
             True
-            if x.len() == 0 or (x.is_numeric() and int(x) > 0)
+            if len(x) == 0 or (x.isnumeric() and int(x) > 0)
             else "You must type a positive number (or nothing)"
+        )
+
+    @staticmethod
+    def validate_negative_optional_number(x: str) -> Union[bool, str]:
+        """Validate an optional negative number"""
+        return (
+            True
+            if len(x) == 0 or (x.lstrip("-").isnumeric() and int(x) < 0)
+            else "You must type a negative number (or nothing)"
         )
 
     @staticmethod
     def validate_positive_number(x: str) -> Union[bool, str]:
         """Validate a positive number"""
         return (
-            True if x.is_numeric() and int(x) > 0 else "You must type a positive number"
+            True if x.isnumeric() and int(x) > 0 else "You must type a positive number"
         )
 
     @staticmethod
     def validate_number(x: str) -> Union[bool, str]:
         """Validate a number"""
-        return True if x.is_numeric() else "You must type a number"
+        return True if x.lstrip("-").isnumeric() else "You must type a number"
 
     @staticmethod
     def validate_track_output_fmt(x: str) -> Union[bool, str]:
@@ -67,7 +76,7 @@ class Validator(object):
     @staticmethod
     def filter_optional_number(x: str) -> Optional[int]:
         """Filter for optional number"""
-        return None if x.len() == 0 else int(x)
+        return None if len(x) == 0 else int(x)
 
     @staticmethod
     def filter_number(x: str) -> int:

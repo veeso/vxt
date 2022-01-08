@@ -37,7 +37,8 @@ from typing import Optional
     "--engine",
     "-e",
     default=GOOGLE,
-    help="Specify speech2text engine [bing, google, google-cloud, houndify, ibm, sphinx]",
+    help="Specify speech2text engine [bing, google, google-cloud, houndify, ibm, sphinx] (default: %s)"
+    % GOOGLE,
 )
 @click.option(
     "--language",

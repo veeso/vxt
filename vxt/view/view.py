@@ -118,23 +118,23 @@ class View(object):
         self.__vh.info("Preparing configuration to split audio by silence…")
         # ask for parameters
         user_input: Optional[int] = self.__vh.input(
-            "Enter minimum silence (default 500ms): ",
+            "Enter minimum silence (default 500ms):",
             Validator.validate_optional_positive_number,
             Validator.filter_optional_number,
         )
         if user_input:
             self.__ctx.config.min_silence_len = user_input
         user_input = self.__vh.input(
-            "Enter silence threshold (default -16dB): ",
-            Validator.validate_optional_positive_number,
+            "Enter silence threshold (default -16dB):",
+            Validator.validate_negative_optional_number,
             Validator.filter_optional_number,
         )
         if user_input:
             self.__ctx.config.silence_threshold = user_input
         user_input = self.__vh.input(
-            "Enter the amount of silence to keep at the end of each track (default 0): ",
+            "Enter the amount of silence to keep at the end of each track (default 0ms):",
             Validator.validate_optional_positive_number,
-            Validator.filter_optional_number,
+            Validator.filter_number,
         )
         if user_input:
             self.__ctx.config.keep_silence = user_input
@@ -157,6 +157,15 @@ class View(object):
                 self.__vh.error("failed to split audio source: %s" % e)
                 self.__state = State.EXIT
                 return
+        # If paylist length is 0, retry
+        if self.__ctx.playlist.length == 0:
+            if self.__vh.confirm(
+                "I could not split by silence with the current parameters; would you like to retry with other parameters?"
+            ):
+                self.__state = State.TRACKIFY_SOURCE
+                return
+            else:
+                self.__state = State.EXIT
         # get speech for tracks
         for i in range(0, self.__ctx.playlist.length):
             with yaspin(
@@ -200,7 +209,7 @@ class View(object):
             self.__state = State.PROMPT_EXIT
         elif index >= 3:
             # get track by index
-            self.__ctx.cursor = index - 2  # NOTE: remove first 2 elements
+            self.__ctx.cursor = index - 3  # NOTE: remove first 3 elements
             self.__state = State.TRACK_TASK_MENU
 
     def __prompt_exit(self) -> None:
@@ -255,7 +264,7 @@ class View(object):
     def __amplify_track(self) -> None:
         """Prompt user for options to amplify current track"""
         dB = self.__vh.input(
-            "Amplification (dB): ", Validator.validate_number, Validator.filter_number
+            "Amplification (dB):", Validator.validate_number, Validator.filter_number
         )
         task = TaskFactory.make(AmplifyTask, self.__ctx, CliArgs(["dB"], [dB]))
         try:
@@ -292,7 +301,7 @@ class View(object):
 
     def __set_track_speech(self) -> None:
         """Set track speech"""
-        speech = self.__vh.input("Type track speech: ")
+        speech = self.__vh.input("Type track speech:")
         task = TaskFactory.make(
             ManualSpeechTask, self.__ctx, CliArgs(["speech"], [speech])
         )
@@ -303,7 +312,7 @@ class View(object):
     def __split_track(self) -> None:
         """Split track"""
         offset = self.__vh.input(
-            "Type the offset where to cut the track (ms): ",
+            "Type the offset where to cut the track (ms):",
             Validator.validate_positive_number,
             Validator.filter_number,
         )
@@ -342,7 +351,7 @@ class View(object):
         self.__vh.info("- %Y: current year with 4 digits")
         # get fmt
         fmt = self.__vh.input(
-            "Output format (default: %s): " % self.__ctx.config.output_fmt,
+            "Output format (default: %s):" % self.__ctx.config.output_fmt,
             Validator.validate_track_output_fmt,
             Validator.filter_optional_string,
         )
@@ -351,7 +360,7 @@ class View(object):
         # output dir
         if not self.__ctx.config.output_dir:
             self.__ctx.config.output_dir = self.__vh.input(
-                "Output directory: ", Validator.validate_path
+                "Output directory:", Validator.validate_path
             )
         # rename tracks
         task = TaskFactory.make(RenameTracksTask, self.__ctx, CliArgs([], []))
@@ -362,26 +371,29 @@ class View(object):
             return
         # format
         audio_format = self.__vh.input(
-            "Which audio format should be used when exporting the trcaks? "
+            "Which audio format should be used when exporting the tracks? "
         )
         # export tracks
         for i in range(0, self.__ctx.playlist.length):
             self.__ctx.cursor = i
             track = self.__ctx.playlist.get(i)
             with yaspin(
-                text="Exporting track %d to %s/%s…"
+                text="Exporting track %d to %s with name %s…"
                 % (i + 1, self.__ctx.config.output_dir, track.slug)
             ) as spinner:
                 try:
                     task = TaskFactory.make(
                         ExportTask, self.__ctx, CliArgs(["format"], [audio_format])
                     )
+                    task.run()
                     spinner.ok("✔️")
                 except Exception as e:
                     spinner.fail("❌")
                     self.__vh.error("failed to export track: %s" % e)
                     return
         # return exit
-        self.__vh.info("All tracks have been exported to %s" % self.__ctx.config.output_dir)
+        self.__vh.info(
+            "All tracks have been exported to %s" % self.__ctx.config.output_dir
+        )
         # ask whether to quit
         self.__state = State.PROMPT_EXIT

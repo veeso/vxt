@@ -50,7 +50,7 @@ class AudioProcessor(object):
         """
         try:
             chunks: List[AudioSegment] = split_on_silence(
-                audio,
+                audio.audio,
                 min_silence_len=min_silence_len,
                 silence_thresh=silence_threshold,
                 keep_silence=keep_silence,
