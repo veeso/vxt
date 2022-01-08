@@ -29,7 +29,7 @@ from vxt.audio.track import Track
 FmtFn = Callable[[Track], str]
 Callchain = List[FmtFn]
 # Regex
-FMT_REGEX: str = r"%(?:([%,d,H,M,m,S,s,t,y,Y]))(\.(?:(\d+)))?"
+FMT_REGEX: str = r"%(?:([%,d,H,I,M,m,S,s,t,y,Y]))(\.(?:(\d+)))?"
 
 
 class TrackFmt(object):

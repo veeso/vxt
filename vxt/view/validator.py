@@ -71,7 +71,7 @@ class Validator(object):
     @staticmethod
     def validate_path(x: str) -> Union[bool, str]:
         """Validate a path; the path must exist on the local system"""
-        True if path.isdir(x) else "%s is not the path of an existing directory"
+        return True if path.isdir(x) else "%s is not the path of an existing directory"
 
     @staticmethod
     def filter_optional_number(x: str) -> Optional[int]:

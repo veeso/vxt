@@ -46,7 +46,7 @@ class Config(object):
         self.__min_silence_len: int = 500
         self.__silence_threshold: int = -16
         self.__keep_silence: int = 0
-        self.__output_fmt: str = "%t-%s.24"
+        self.__output_fmt: TrackFmt = TrackFmt("%t-%s.24")
         self.__output_dir: Optional[str] = None
 
     @property
@@ -92,7 +92,7 @@ class Config(object):
         self.__keep_silence = how_much
 
     @property
-    def output_fmt(self) -> str:
+    def output_fmt(self) -> TrackFmt:
         return self.__output_fmt
 
     @output_fmt.setter

@@ -44,7 +44,7 @@ class Playlist(object):
         """Iter tracks"""
         return iter(self.__tracks)
 
-    def remove(self, index: int):
+    def remove(self, index: int) -> None:
         """Remove track at provided index."""
         # split list
         pre = self.__tracks[:index]
@@ -55,11 +55,13 @@ class Playlist(object):
             post[i] = t
         self.__tracks = pre + post
 
-    def insert(self, track: Track, index: int):
+    def insert(self, track: Track, index: int) -> None:
         """
-        Insert `track` intoto playlist at the provided `index`.
+        Insert `track` into playlist at the provided `index`.
         If index is less than zero or bigger than the length, the track is just pushed to the end of the list
         """
+        track.index = index
+        print(list(map(lambda x: x.slug, self.__tracks)))
         if index < 0 or index >= self.length:
             self.__tracks.append(track)
         else:
@@ -68,14 +70,15 @@ class Playlist(object):
             post = self.__tracks[index:]
             # add 1 to all tracks index
             for i, t in enumerate(post):
-                t.index = t.index - 1
+                t.index = t.index + 1
                 post[i] = t
             self.__tracks = pre + post
 
-    def replace(self, track: Track, index: int):
+    def replace(self, track: Track, index: int) -> None:
         """Replace current track at `index` with provided `track`"""
         self.__tracks[index] = track
+        self.__tracks[index].index = index
 
-    def rename_track(self, name: str, index: int):
+    def rename_track(self, name: str, index: int) -> None:
         """Rename track at `index` with `name`"""
         self.__tracks[index].set_name(name)

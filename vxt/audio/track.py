@@ -30,11 +30,14 @@ class Track(Audio):
     The track has not a physical location and is considered to be a mutable audio entity
     """
 
-    def __init__(self, audio: AudioSegment, index: int, name: str = None) -> None:
+    def __init__(
+        self, audio: AudioSegment, index: int, name: Optional[str] = None
+    ) -> None:
         super().__init__()
-        self.__audio = audio
-        self.__index = index
-        self.__speech = ""
+        self.__audio: AudioSegment = audio
+        self.__index: int = index
+        self.__speech: str = ""
+        self.__name: Optional[str] = name
 
     @property
     def audio(self) -> AudioSegment:

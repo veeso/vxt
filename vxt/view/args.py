@@ -47,10 +47,6 @@ class CliArgs(object):
         super().__init__()
         self.__args = {keys[i]: Argument(values[i]) for i in range(len(keys))}
 
-    def push(self, key: str, value: str) -> None:
-        """Push new argument to cli args"""
-        self.__args[key] = Argument(value)
-
     def get(self, key: str) -> Argument:
         """Get value with provided key"""
         value = self.__args.get(key)
