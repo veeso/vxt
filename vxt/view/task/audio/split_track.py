@@ -48,9 +48,9 @@ class SplitTrackTask(ITask):
         track = self.__playlist.get(self.__index)
         # split into two
         pre_track = track
-        pre_track.audio = pre_track.audio[: self.__offset]
+        pre_track.set_audio(pre_track.audio[: self.__offset])
         post_track = track
-        post_track.audio = post_track.audio[self.__offset :]
+        post_track.set_audio(post_track.audio[self.__offset :])
         # get speech for "pre"
         pre_track.speech = self.__engine.get_speech(pre_track, self.__language)
         # get speech for "post"

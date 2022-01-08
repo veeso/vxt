@@ -62,7 +62,6 @@ class Playlist(object):
         the track is just pushed to the end of the list
         """
         track.index = index
-        print(list(map(lambda x: x.slug, self.__tracks)))
         if index < 0 or index >= self.length:
             self.__tracks.append(track)
         else:

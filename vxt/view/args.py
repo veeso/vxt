@@ -28,16 +28,30 @@ class Argument(object):
 
     def __init__(self, arg: Any) -> None:
         super().__init__()
-        self.__value = arg
+        self._value = arg
 
     def as_str(self) -> str:
-        return str(self.__value)
+        return str(self._value)
 
     def as_int(self) -> int:
-        return int(self.__value)
+        return int(self._value)
 
     def as_float(self) -> float:
-        return float(self.__value)
+        return float(self._value)
+
+
+class FallbackArgument(Argument):
+    def __init__(self, arg: Any) -> None:
+        super().__init__(arg)
+
+    def as_str(self) -> str:
+        return self._value
+
+    def as_int(self) -> Any:
+        return self._value
+
+    def as_float(self) -> float:
+        return self._value
 
 
 class CliArgs(object):
@@ -54,3 +68,13 @@ class CliArgs(object):
             return value
         else:
             raise KeyError(key)
+
+    def get_or(self, key: str, default: Any) -> Argument:
+        """Get value with provided key; if the value doesn't exist,
+        will return an argument that will
+        return the default value when tried to be accessed"""
+        value = self.__args.get(key)
+        if value:
+            return value
+        else:
+            return FallbackArgument(default)

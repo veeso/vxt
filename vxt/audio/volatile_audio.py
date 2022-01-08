@@ -20,36 +20,22 @@
 # SOFTWARE.
 #
 
-from ..task import Task as ITask
-from vxt.audio.audio import Audio
-from vxt.audio.volatile_audio import VolatileAudio
-from vxt.audio.speaker import Speaker
-
-from typing import Optional
+from .audio import Audio, AudioSegment
 
 
-class PlayTask(ITask):
-    """A task to play audio"""
+class VolatileAudio(Audio):
+    """
+    An audio loaded into memory
+    """
 
-    def __init__(self, audio: Audio) -> None:
+    def __init__(self, audio: AudioSegment) -> None:
         super().__init__()
-        self.__audio = audio
+        self.__audio: AudioSegment = audio
 
-    def run(self) -> None:
-        Speaker().play(self.__audio)
+    @property
+    def audio(self) -> AudioSegment:
+        return self.__audio
 
-
-class PlayChunkTask(ITask):
-    """A task to play a portion of an audio"""
-
-    def __init__(
-        self, audio: Audio, start: Optional[int] = None, end: Optional[int] = None
-    ) -> None:
-        super().__init__()
-        self.__audio = audio
-        self.__start = start
-        self.__end = end
-
-    def run(self) -> None:
-        audio = VolatileAudio(self.__audio.audio[self.__start : self.__end])
-        Speaker().play(audio)
+    @property
+    def slug(self) -> str:
+        return ""

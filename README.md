@@ -106,7 +106,7 @@ View VXT's changelog [HERE](CHANGELOG.md)
 
 VXT is powered by these awesome projects:
 
-- [inquirer](https://github.com/magmax/python-inquirer)
+- [PyInquirer](https://github.com/CITGuru/PyInquirer)
 - [pydub](http://pydub.com/)
 - [speech_recognition](https://github.com/Uberi/speech_recognition)
 - [yaspin](https://pypi.org/project/yaspin/)

@@ -30,6 +30,7 @@ from .task.factory import (
     DeleteTrackTask,
     ExportTask,
     NormalizeTask,
+    PlayChunkTask,
     PlayTask,
     RenameTracksTask,
     SplitSilenceTask,
@@ -41,6 +42,7 @@ from .validator import Validator
 
 
 from enum import Enum
+from time import sleep
 from typing import Optional
 from yaspin import yaspin
 
@@ -54,6 +56,8 @@ class State(Enum):
     # 2nd step: show the track menu; this step is recurring
     TRACKS_LIST_MENU = 10
     PROMPT_EXIT = 11
+    # TODO: normalize tracks
+    # TODO: amplify all
     # 3rd step: show track operation menu
     TRACK_TASK_MENU = 20
     AMPLIFY_TRACK = 21
@@ -170,6 +174,7 @@ class View(object):
             else:
                 self.__state = State.EXIT
         # get speech for tracks
+        # TODO: create a unique task which uses the playlist and multi-thread
         for i in range(0, self.__ctx.playlist.length):
             with yaspin(
                 text="Getting speech for tracks (%d/%d)"
@@ -194,7 +199,7 @@ class View(object):
 
     def __show_track_list_menu(self) -> None:
         """Show track list menu"""
-        choices = ["export tracks", "exit VXT", "--------------------------------"]
+        choices = ["export tracks", "exit VXT"]
         # make track list
         choices.extend(
             list(
@@ -210,9 +215,9 @@ class View(object):
             self.__state = State.EXPORT_TRACKS
         elif index == 1:
             self.__state = State.PROMPT_EXIT
-        elif index >= 3:
+        elif index >= 2:
             # get track by index
-            self.__ctx.cursor = index - 3  # NOTE: remove first 3 elements
+            self.__ctx.cursor = index - 2  # NOTE: remove first 3 elements
             self.__state = State.TRACK_TASK_MENU
 
     def __prompt_exit(self) -> None:
@@ -232,7 +237,6 @@ class View(object):
             "normalize audio",
             "set speech manually",
             "split track into two",
-            "----------------------",
             "go back to the track list",
         ]
         choice = self.__vh.select(
@@ -289,11 +293,11 @@ class View(object):
             self.__state = State.TRACK_TASK_MENU
 
     def __normalize_track(self) -> None:
-        """Normalize track audio"""
+        """Normalize audio track"""
         task = TaskFactory.make(NormalizeTask, self.__ctx, CliArgs([], []))
         try:
             self.__ctx.playlist.replace(task.run(), self.__ctx.cursor)
-            self.__vh.info("Normalized track audio")
+            self.__vh.info("Normalized audio track")
         except Exception as e:
             self.__vh.error("Failed to normalize audio: %s" % e)
         self.__state = State.TRACK_TASK_MENU
@@ -320,6 +324,25 @@ class View(object):
             Validator.validate_positive_number,
             Validator.filter_number,
         )
+        # let's listen the how the track would be if splitting
+        if self.__vh.confirm(
+            "Would you like to listen the two chunks before splitting?"
+        ):
+            self.__vh.info("Chunk 1 (ends at %d):" % offset)
+            task = TaskFactory.make(
+                PlayChunkTask, self.__ctx, CliArgs(["end"], [offset])
+            )
+            task.run()
+            self.__vh.info("Waiting 1 sec…")
+            sleep(1)
+            self.__vh.info("Chunk 2 (starts at %d):" % offset)
+            task = TaskFactory.make(
+                PlayChunkTask, self.__ctx, CliArgs(["start"], [offset])
+            )
+            task.run()
+            if not self.__vh.confirm("Do you want to proceed with the cut?"):
+                return  # Re-do
+
         task = TaskFactory.make(
             SplitTrackTask, self.__ctx, CliArgs(["offset"], [offset])
         )

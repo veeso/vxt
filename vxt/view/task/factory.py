@@ -33,7 +33,7 @@ from .audio.amplify import AmplifyTask
 from .audio.delete_track import DeleteTrackTask
 from .audio.export import ExportTask
 from .audio.normalize import NormalizeTask
-from .audio.play import PlayTask
+from .audio.play import PlayTask, PlayChunkTask
 from .audio.rename_track import RenameTracksTask
 from .audio.split_silence import SplitSilenceTask
 from .audio.split_track import SplitTrackTask
@@ -57,6 +57,12 @@ class TaskFactory(object):
             return TaskFactory.__normalize_task(ctx)
         elif task == PlayTask:
             return TaskFactory.__play_task(ctx)
+        elif task == PlayChunkTask:
+            return TaskFactory.__play_chunk_task(
+                ctx,
+                cli_args.get_or("start", None).as_int(),
+                cli_args.get_or("end", None).as_int(),
+            )
         elif task == RenameTracksTask:
             return TaskFactory.__rename_track_task(ctx)
         elif task == SplitSilenceTask:
@@ -94,8 +100,14 @@ class TaskFactory(object):
         return NormalizeTask(TaskFactory.__get_audio(ctx))
 
     @staticmethod
-    def __play_task(ctx: Context) -> NormalizeTask:
+    def __play_task(ctx: Context) -> PlayTask:
         return PlayTask(TaskFactory.__get_audio(ctx))
+
+    @staticmethod
+    def __play_chunk_task(
+        ctx: Context, start: Optional[int], end: Optional[int]
+    ) -> PlayChunkTask:
+        return PlayChunkTask(TaskFactory.__get_audio(ctx), start, end)
 
     @staticmethod
     def __rename_track_task(ctx: Context) -> RenameTracksTask:
