@@ -23,6 +23,8 @@ jobs:
         run: |
           apt update && apt install -y ffmpeg
           python -m pip install --upgrade pip
+      - name: setup-ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v1
       - name: Setup poetry
         uses: abatilo/actions-poetry@v2.0.0
         with:
