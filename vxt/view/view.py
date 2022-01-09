@@ -56,8 +56,8 @@ class State(Enum):
     # 2nd step: show the track menu; this step is recurring
     TRACKS_LIST_MENU = 10
     PROMPT_EXIT = 11
-    # TODO: normalize tracks
-    # TODO: amplify all
+    NORMALIZE_PLAYLIST = 12
+    AMPLIFY_PLAYLIST = 13
     # 3rd step: show track operation menu
     TRACK_TASK_MENU = 20
     AMPLIFY_TRACK = 21
@@ -91,6 +91,10 @@ class View(object):
                 self.__show_track_list_menu()
             elif self.__state == State.PROMPT_EXIT:
                 self.__prompt_exit()
+            elif self.__state == State.AMPLIFY_PLAYLIST:
+                self.__amplify_playlist()
+            elif self.__state == State.NORMALIZE_PLAYLIST:
+                self.__normalize_playlist()
             elif self.__state == State.TRACK_TASK_MENU:
                 self.__show_track_task_menu()
             elif self.__state == State.AMPLIFY_TRACK:
@@ -199,7 +203,12 @@ class View(object):
 
     def __show_track_list_menu(self) -> None:
         """Show track list menu"""
-        choices = ["export tracks", "exit VXT"]
+        choices = [
+            "export tracks",
+            "exit VXT",
+            "amplify playlist",
+            "normalize playlist",
+        ]
         # make track list
         choices.extend(
             list(
@@ -215,9 +224,13 @@ class View(object):
             self.__state = State.EXPORT_TRACKS
         elif index == 1:
             self.__state = State.PROMPT_EXIT
-        elif index >= 2:
+        elif index == 2:
+            self.__state = State.AMPLIFY_PLAYLIST
+        elif index == 3:
+            self.__state = State.NORMALIZE_PLAYLIST
+        elif index >= 4:
             # get track by index
-            self.__ctx.cursor = index - 2  # NOTE: remove first 3 elements
+            self.__ctx.cursor = index - 4  # NOTE: remove first 3 elements
             self.__state = State.TRACK_TASK_MENU
 
     def __prompt_exit(self) -> None:
@@ -226,6 +239,33 @@ class View(object):
             self.__state = State.EXIT
         else:
             self.__state = State.TRACKS_LIST_MENU
+
+    def __amplify_playlist(self) -> None:
+        """Amplify all tracks in the playlist"""
+        dB = self.__vh.input(
+            "Amplification (dB):", Validator.validate_number, Validator.filter_number
+        )
+        for i in range(0, self.__ctx.playlist.length):
+            self.__ctx.cursor = i
+            task = TaskFactory.make(AmplifyTask, self.__ctx, CliArgs(["dB"], [dB]))
+            try:
+                self.__ctx.playlist.replace(task.run(), self.__ctx.cursor)
+            except Exception as e:
+                self.__vh.error("Failed to amplify track: %s" % e)
+        self.__vh.info("Tracks amplified by %d dB" % dB)
+        self.__state = State.TRACKS_LIST_MENU
+
+    def __normalize_playlist(self) -> None:
+        """Normalize all tracks in the playlist"""
+        for i in range(0, self.__ctx.playlist.length):
+            self.__ctx.cursor = i
+            task = TaskFactory.make(NormalizeTask, self.__ctx, CliArgs([], []))
+            try:
+                self.__ctx.playlist.replace(task.run(), self.__ctx.cursor)
+            except Exception as e:
+                self.__vh.error("Failed to amplify track: %s" % e)
+        self.__vh.info("All tracks in the playlist have been normalized")
+        self.__state = State.TRACKS_LIST_MENU
 
     def __show_track_task_menu(self) -> None:
         """Show track task menu"""
