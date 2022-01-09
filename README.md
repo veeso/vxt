@@ -125,7 +125,7 @@ The following parameters are supported.
 - `%m`: current month
 - `%S`: current seconds
 - `%s`: track speech
-- `%s`.NUMBER track speech cut at length (e.g. `%s.24`)
+- `%s.NUMBER` track speech cut at length (e.g. `%s.24`)
 - `%t`: track number in track list (from 1 to n)
 - `%y`: current year with 2 digits
 - `%Y`: current year with 4 digits
