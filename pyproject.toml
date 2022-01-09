@@ -8,12 +8,15 @@ maintainers = ["veeso <christian.visintin1997@gmail.com>"]
 name = "vxt"
 readme = "README.md"
 repository = "https://github.com/veeso/vxt"
-version = "0.1.0"
+version = "0.1.0-1"
 keywords = [
     "Speech recognition",
     "voice extract",
     "audio voice",
     "split audio"
+]
+include = [
+    "LICENSE",
 ]
 
 [tool.poetry.dependencies]
