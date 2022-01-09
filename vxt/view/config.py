@@ -45,8 +45,8 @@ class Config(object):
             self.__language: str = "en_US"
         self.__min_silence_len: int = 500
         self.__silence_threshold: int = -16
-        self.__keep_silence: int = 0
-        self.__output_fmt: TrackFmt = TrackFmt("%t-%s.24")
+        self.__keep_silence: int = 500
+        self.__output_fmt: TrackFmt = TrackFmt("%t-%s.64")
         self.__output_dir: Optional[str] = None
 
     @property

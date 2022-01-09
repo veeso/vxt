@@ -85,3 +85,15 @@ def test_playlist_rename():
     )
     playlist.rename_track("pippo", 1)
     assert ["foo", "pippo", "omar"] == list(map(lambda x: x.slug, playlist.iter()))
+
+
+def test_playlist_set_speech():
+    playlist = Playlist(
+        [
+            Track(MOCK_AUDIO, 0, "foo"),
+            Track(MOCK_AUDIO, 1, "bar"),
+            Track(MOCK_AUDIO, 2, "omar"),
+        ]
+    )
+    playlist.set_track_speech("hello", 1)
+    assert "hello" == playlist.get(1).speech

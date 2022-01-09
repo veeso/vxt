@@ -14,8 +14,8 @@ def test_new_config():
     assert locale == config.language
     assert 500 == config.min_silence_len
     assert -16 == config.silence_threshold
-    assert 0 == config.keep_silence
-    assert str(TrackFmt("%t-%s.24")) == str(config.output_fmt)
+    assert 500 == config.keep_silence
+    assert str(TrackFmt("%t-%s.64")) == str(config.output_fmt)
     assert config.output_dir is None
 
 
@@ -27,8 +27,8 @@ def test_set_config():
     assert 100 == config.min_silence_len
     config.silence_threshold = -30
     assert -30 == config.silence_threshold
-    config.keep_silence = 500
-    assert 500 == config.keep_silence
+    config.keep_silence = 300
+    assert 300 == config.keep_silence
     config.output_fmt = "%s.32"
     assert str(TrackFmt("%s.32")) == str(config.output_fmt)
     config.output_dir = "/tmp/output"

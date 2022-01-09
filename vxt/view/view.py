@@ -117,7 +117,7 @@ class View(object):
                 raise NotImplementedError(self.__state)
 
     def __get_track_view_name(self) -> str:
-        return "[%d] %.32s" % (
+        return "[%d] %.96s" % (
             self.__ctx.cursor,
             self.__ctx.playlist.get(self.__ctx.cursor).speech,
         )
@@ -142,9 +142,9 @@ class View(object):
             self.__ctx.config.silence_threshold = user_input
         user_input = self.__vh.input(
             "Enter the amount of silence to keep at the end of each track (default"
-            " 0ms):",
+            " 500ms):",
             Validator.validate_optional_positive_number,
-            Validator.filter_number,
+            Validator.filter_optional_number,
         )
         if user_input:
             self.__ctx.config.keep_silence = user_input
@@ -178,26 +178,8 @@ class View(object):
             else:
                 self.__state = State.EXIT
         # get speech for tracks
-        # TODO: create a unique task which uses the playlist and multi-thread
-        for i in range(0, self.__ctx.playlist.length):
-            with yaspin(
-                text="Getting speech for tracks (%d/%d)"
-                % (i + 1, self.__ctx.playlist.length)
-            ) as spinner:
-                task = SpeechTask(
-                    self.__ctx.config.engine,
-                    self.__ctx.playlist.get(i),
-                    self.__ctx.config.language,
-                )
-                # Try to get speech for track
-                try:
-                    self.__ctx.playlist.replace(task.run(), i)
-                except Exception as e:
-                    spinner.fail("❌")
-                    self.__vh.error("failed to get speech for track: %s" % e)
-                    self.__state = State.EXIT
-                    return
-                spinner.ok("✔️")
+        task = TaskFactory.make(SpeechTask, self.__ctx, CliArgs([], []))
+        self.__ctx.playlist = task.run()
         # set new state to `TRACKS_LIST_MENU`
         self.__state = State.TRACKS_LIST_MENU
 
@@ -213,7 +195,7 @@ class View(object):
         choices.extend(
             list(
                 map(
-                    lambda x: "%d: %.32s" % (x[0] + 1, x[1].speech),
+                    lambda x: "%d: %.96s" % (x[0] + 1, x[1].speech),
                     enumerate(self.__ctx.playlist.iter()),
                 )
             )

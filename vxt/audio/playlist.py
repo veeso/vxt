@@ -82,3 +82,7 @@ class Playlist(object):
     def rename_track(self, name: str, index: int) -> None:
         """Rename track at `index` with `name`"""
         self.__tracks[index].set_name(name)
+
+    def set_track_speech(self, speech: str, index: int) -> None:
+        """Set speech for a track at `index`"""
+        self.__tracks[index].speech = speech
