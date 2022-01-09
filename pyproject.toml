@@ -1,8 +1,8 @@
 [tool.poetry]
 authors = ["veeso <christian.visintin1997@gmail.com>"]
 description = "A python CLI tool to extract voice sentences from audio files with speech recognition"
-documentation = "https://veeso.github.io/vxt"
-homepage = "https://veeso.github.io/vxt"
+documentation = "https://github.com/veeso/vxt"
+homepage = "https://github.com/veeso/vxt"
 license = "MIT"
 maintainers = ["veeso <christian.visintin1997@gmail.com>"]
 name = "vxt"
@@ -18,18 +18,18 @@ keywords = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pydub = "^0.25.0"
-yaspin = "^2.1.0"
+click = "^8.0.3"
 inquirer = "^2.8.0"
+pydub = "^0.25.0"
 SpeechRecognition  = "^3.8.0"
 termcolor = "^1.1.0"
-click = "^8.0.3"
+yaspin = "^2.1.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
+black = "^21.12b0"
 flake8 = "^4.0.1"
 flake8-bugbear = "^21.11.29"
-black = "^21.12b0"
+pytest = "^6.2.5"
 
 [tool.poetry.urls]
 issues = "https://github.com/veeso/vxt/issues"

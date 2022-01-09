@@ -44,6 +44,7 @@ from .validator import Validator
 from enum import Enum
 from time import sleep
 from typing import Optional
+import os.path
 from yaspin import yaspin
 
 
@@ -428,8 +429,8 @@ class View(object):
             self.__ctx.cursor = i
             track = self.__ctx.playlist.get(i)
             with yaspin(
-                text="Exporting track %d to %s with name %s…"
-                % (i + 1, self.__ctx.config.output_dir, track.slug)
+                text="Exporting track %d to %s…"
+                % (i + 1, os.path.join(self.__ctx.config.output_dir, track.slug))
             ) as spinner:
                 try:
                     task = TaskFactory.make(

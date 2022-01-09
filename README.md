@@ -1,9 +1,5 @@
 # VoiceXTractor
 
-<p align="center">
-  <img src="/assets/images/vxt.svg" width="256" height="256" />
-</p>
-
 <p align="center">~ A python CLI tool to extract voice sentences from audio files with speech recognition ~</p>
 <p align="center">
   <a href="https://ko-fi.com/veeso" target="_blank">Ko-fi</a>
@@ -14,7 +10,7 @@
 </p>
 
 <p align="center">Developed by <a href="https://veeso.github.io/" target="_blank">@veeso</a></p>
-<p align="center">Current version: 0.1.0 (TBD)</p>
+<p align="center">Current version: 0.1.0 (09/01/2022)</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT"
@@ -60,19 +56,79 @@
 
 ## About VXT 🚜
 
-TODO:
+VXT, which stands for VoiceXTractor is a Python command-line utility to extract voice tracks from audio.
 
----
+How it works:
 
-## Features 🎁
-
-TODO:
+1. You provide VXT with an audio file
+2. The audio file is split by silence
+3. for each "track" chunked by the audio file, it gets the speech for it using a customisable speech-to-text engine
+4. you can at this point work on tracks (amplify, normalize, split, remove...)
+5. export the tracks to files with the format you prefer
 
 ---
 
 ## Get started 🚀
 
-TODO:
+You can install VXT with pip:
+
+```sh
+pip3 install vxt
+```
+
+then you can run VXT with the following arguments:
+
+```sh
+vxt -l it_IT -o ./output/ ./hackerino.mp3
+```
+
+this will split the `hackerino.mp3` audio file into tracks by voice into `output/`, the `-l` option specifies the audio language is Italian.
+
+vxt supports these options:
+
+```txt
+  -e, --engine TEXT            Specify speech2text engine [bing, google,
+                               google-cloud, houndify, ibm, sphinx] (default:
+                               google)
+
+  -l, --language TEXT          Specify audio language (e.g. it_IT), system
+                               language will be used otherwise
+
+  -f, --output-fmt TEXT        Specify output format (See readme)
+  -o, --output-dir TEXT        Specify output directory
+  -A, --api-key TEXT           Specify api key (required for: bing, google
+  -J, --json-credentials TEXT  Specify json credentials (required for: google-
+                               cloud)
+
+  -C, --client-id TEXT         Specify client id (required for: houndify)
+  -K, --client-key TEXT        Specify client key (required for: houndify)
+  -U, --username TEXT          Specify username (required for: ibm)
+  -P, --password TEXT          Specify user password (required for: ibm)
+  --keyword-entries TEXT       Specify keyword entries (required for: sphinx)
+  --grammar-file TEXT          Specify grammar file (required for: sphinx)
+  --help                       Show this message and exit.
+```
+
+by default the `google` engine will be used for speech-to-text.
+
+### Output format
+
+Track filename fmt.
+The syntax use parameters which must be preceeded by `%`, everything in between will be kept the same.
+The following parameters are supported.
+
+- `%%`: print percentage symbol
+- `%d`: current day
+- `%H`: current hours
+- `%I`: current timestamp ISO8601 syntax
+- `%M`: current minutes
+- `%m`: current month
+- `%S`: current seconds
+- `%s`: track speech
+- `%s`.NUMBER track speech cut at length (e.g. `%s.24`)
+- `%t`: track number in track list (from 1 to n)
+- `%y`: current year with 2 digits
+- `%Y`: current year with 4 digits
 
 ---
 
