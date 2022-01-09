@@ -132,9 +132,7 @@ class TaskFactory(object):
 
     @staticmethod
     def __speech_task(ctx: Context) -> SpeechTask:
-        return SpeechTask(
-            ctx.config.engine, ctx.playlist, ctx.config.language
-        )
+        return SpeechTask(ctx.config.engine, ctx.playlist, ctx.config.language)
 
     @staticmethod
     def __manual_speech_task(ctx: Context, speech: str) -> ManualSpeechTask:
