@@ -45,11 +45,6 @@
       src="https://github.com/veeso/vxt/workflows/Ci/badge.svg"
       alt="CI"
   /></a>
-  <a href="https://coveralls.io/github/veeso/vxt"
-    ><img
-      src="https://coveralls.io/repos/github/veeso/vxt/badge.svg"
-      alt="Coveralls"
-  /></a>
 </p>
 
 ---
