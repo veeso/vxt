@@ -4,9 +4,9 @@
 <p align="center">
   <a href="https://ko-fi.com/veeso" target="_blank">Ko-fi</a>
   ·
-  <a href="#get-started" target="_blank">Installation</a>
+  <a href="#get-started">Installation</a>
   ·
-  <a href="/docs/en_EN/man.md" target="_blank">User manual</a>
+  <a href="CHANGELOG.md" target="_blank">Changelog</a>
 </p>
 
 <p align="center">Developed by <a href="https://veeso.github.io/" target="_blank">@veeso</a></p>
