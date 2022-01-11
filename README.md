@@ -71,10 +71,18 @@ You can install VXT with pip:
 pip3 install vxt
 ```
 
-then you can run VXT with the following arguments:
+then you must install dependencies:
 
 ```sh
-vxt -l it_IT -o ./output/ ./hackerino.mp3
+pip3 install SpeechRecognition PyInquirer pydub termcolor click
+```
+
+you also need to install `ffmpeg` or `libav`.
+
+Finally you can run VXT with the following arguments:
+
+```sh
+python3 -m vxt -l it_IT -o ./output/ ./hackerino.mp3
 ```
 
 this will split the `hackerino.mp3` audio file into tracks by voice into `output/`, the `-l` option specifies the audio language is Italian.
