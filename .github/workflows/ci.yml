@@ -11,7 +11,6 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8]
-        poetry-version: [1.1.12]
 
     steps:
       - uses: actions/checkout@v2
@@ -23,17 +22,14 @@ jobs:
         run: |
           apt update && apt install -y ffmpeg
           python -m pip install --upgrade pip
+          python -m pip install coverage unittest2 pytest codecov nose black flake8
       - name: setup-ffmpeg
         uses: FedericoCarboni/setup-ffmpeg@v1
-      - name: Setup poetry
-        uses: abatilo/actions-poetry@v2.0.0
-        with:
-          poetry-version: ${{ matrix.poetry-version }}
       - name: Install with poetry
         run: poetry install
       - name: Run tests
-        run: poetry run pytest
+        run: pytest
       - name: Run fmt (black)
-        run: poetry run black --check vxt/
+        run: black -l 88 --check vxt/
       - name: Run linter
-        run: poetry run flake8
+        run: flake8 vxt/
