@@ -25,8 +25,6 @@ jobs:
           python -m pip install coverage unittest2 pytest codecov nose black flake8
       - name: setup-ffmpeg
         uses: FedericoCarboni/setup-ffmpeg@v1
-      - name: Install with poetry
-        run: poetry install
       - name: Run tests
         run: pytest
       - name: Run fmt (black)
