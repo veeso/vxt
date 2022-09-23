@@ -10,7 +10,7 @@ README = (ROOT / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="vxt",
-    version="0.1.1",
+    version="0.1.2",
     description="A python CLI tool to extract voice sentences from audio files with speech recognition",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -30,7 +30,7 @@ setup(
         "termcolor>=1",
         "yaspin>=2",
     ],
-    entry_points={"console_scripts": ["attila = vxt.__main__:main"]},
+    entry_points={"console_scripts": ["vxt = vxt.__main__:main"]},
     packages=find_packages(exclude=("tests",)),
     keywords=["Speech recognition", "voice extract", "audio voice", "split audio"],
     classifiers=[
