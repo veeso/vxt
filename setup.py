@@ -10,7 +10,7 @@ README = (ROOT / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="vxt",
-    version="0.2.0",
+    version="0.1.1",
     description="A python CLI tool to extract voice sentences from audio files with speech recognition",
     long_description=README,
     long_description_content_type="text/markdown",
