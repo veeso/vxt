@@ -20,9 +20,14 @@
 # SOFTWARE.
 #
 
+from vxt.audio.track import Track
 from ..task import Task as ITask
 from vxt.audio.playlist import Playlist
+from vxt.audio.file_audio_source import FileAudioSource
 from vxt.speech2text.engine import Speech2TextEngine
+
+from pydub import AudioSegment
+from tempfile import NamedTemporaryFile
 
 
 class SplitTrackTask(ITask):
@@ -47,10 +52,10 @@ class SplitTrackTask(ITask):
         # get track
         track = self.__playlist.get(self.__index)
         # split into two
-        pre_track = track
-        pre_track.set_audio(pre_track.audio[: self.__offset])
-        post_track = track
-        post_track.set_audio(post_track.audio[self.__offset :])
+        chunk = track.audio[: self.__offset]
+        pre_track = Track(self.__clone_audio(chunk), track.index, None)
+        chunk = track.audio[self.__offset :]
+        post_track = Track(self.__clone_audio(chunk), pre_track.index + 1, None)
         # get speech for "pre"
         pre_track.speech = self.__engine.get_speech(pre_track, self.__language)
         # get speech for "post"
@@ -60,3 +65,9 @@ class SplitTrackTask(ITask):
         # add post to playlist
         self.__playlist.insert(post_track, self.__index + 1)
         return self.__playlist
+
+    def __clone_audio(self, audio: AudioSegment) -> AudioSegment:
+        temp = NamedTemporaryFile("wb+")
+        audio.export(temp.name, "wav")
+        cloned = FileAudioSource(temp.name)
+        return cloned.audio

@@ -3,5 +3,6 @@ pathlib2>=2
 inquirer>=2.8
 pydub>=0.25
 SpeechRecognition>=3.8
+PyInquirer>=1.0.3
 termcolor>=1
 yaspin>=2

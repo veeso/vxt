@@ -25,6 +25,7 @@ setup(
         "pathlib2>=2",
         "inquirer>=2.8",
         "pydub>=0.25",
+        "PyInquirer>=1.0.3",
         "SpeechRecognition>=3.8",
         "termcolor>=1",
         "yaspin>=2",

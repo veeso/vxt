@@ -23,6 +23,7 @@ jobs:
           apt update && apt install -y ffmpeg
           python -m pip install --upgrade pip
           python -m pip install coverage unittest2 pytest codecov nose black flake8
+          python -m pip install -r requirements.txt
       - name: setup-ffmpeg
         uses: FedericoCarboni/setup-ffmpeg@v1
       - name: Run tests
